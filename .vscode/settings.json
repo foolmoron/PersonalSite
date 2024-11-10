@@ -1,5 +1,8 @@
 {
 	"editor.formatOnSaveMode": "file",
 	"editor.formatOnSave": true,
-	"editor.defaultFormatter": "esbenp.prettier-vscode"
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"workbench.editor.labelFormat": "short",
+	"explorer.sortOrder": "filesFirst",
+	"workbench.tree.indent": 12
 }

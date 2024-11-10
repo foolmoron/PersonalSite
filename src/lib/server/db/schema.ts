@@ -8,24 +8,23 @@ export const skillsEnum = pgEnum('skills', skillsTuple);
 const tagsTuple = Object.keys(TAGS) as [keyof typeof TAGS];
 export const tagsEnum = pgEnum('tags', tagsTuple);
 
-export const user = pgTable('user', {
+export const users = pgTable('users', {
 	id: text('id').primaryKey(),
-	age: integer('age'),
-	username: text('username').notNull().unique(),
-	passwordHash: text('password_hash').notNull(),
+	googleId: text('google_id').notNull().unique(),
+	username: text('username').notNull().default('N/A'),
 });
-export type User = typeof user.$inferSelect;
+export type User = typeof users.$inferSelect;
 
-export const session = pgTable('session', {
+export const sessions = pgTable('sessions', {
 	id: text('id').primaryKey(),
 	userId: text('user_id')
 		.notNull()
-		.references(() => user.id),
+		.references(() => users.id),
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
 });
-export type Session = typeof session.$inferSelect;
+export type Session = typeof sessions.$inferSelect;
 
-export const project = pgTable('project', {
+export const projects = pgTable('projects', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
 	media: text('media')
@@ -37,13 +36,13 @@ export const project = pgTable('project', {
 		.notNull()
 		.default(sql.raw(`array${JSON.stringify(skillsTuple).replaceAll('"', "'")}::skills[]`)),
 });
-export type Project = typeof project.$inferSelect;
+export type Project = typeof projects.$inferSelect;
 
-export const achievement = pgTable('achievement', {
+export const achievements = pgTable('achievements', {
 	id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
 	projectId: text('project_id')
 		.notNull()
-		.references(() => project.id),
+		.references(() => projects.id),
 	summary: text('summary').notNull(),
 	description: text('description').default(''),
 	private: text('private').default(''),
@@ -56,4 +55,4 @@ export const achievement = pgTable('achievement', {
 		.notNull()
 		.default(sql.raw(`array${JSON.stringify(tagsTuple).replaceAll('"', "'")}::tags[]`)),
 });
-export type Achievement = typeof achievement.$inferSelect;
+export type Achievement = typeof achievements.$inferSelect;
