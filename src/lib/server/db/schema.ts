@@ -1,6 +1,6 @@
 import { SKILLS, TAGS } from '../../enums';
 import { sql } from 'drizzle-orm';
-import { pgTable, text, integer, timestamp, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, timestamp, pgEnum, date } from 'drizzle-orm/pg-core';
 
 const skillsTuple = Object.keys(SKILLS) as [keyof typeof SKILLS];
 export const skillsEnum = pgEnum('skills', skillsTuple);
@@ -27,6 +27,8 @@ export type Session = typeof sessions.$inferSelect;
 export const projects = pgTable('projects', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
+	start: date('start').notNull().defaultNow(),
+	end: date('end'),
 	media: text('media')
 		.array()
 		.notNull()

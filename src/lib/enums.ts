@@ -2,10 +2,13 @@ export const SKILLS = {
 	ts: 'TypeScript',
 	js: 'JavaScript',
 	cs: 'C#',
+	python: 'Python',
+	java: 'Java',
+	ruby: 'Ruby',
+	rust: 'Rust',
 	htmlcss: 'HTML/CSS',
 	sql: 'SQL',
 	nosql: 'NoSQL',
-	python: 'Python',
 	node: 'Node',
 	react: 'React',
 	svelte: 'Svelte',
@@ -22,26 +25,66 @@ export const SKILLS = {
 	gamedesign: 'Game Design',
 	audio: 'Audio Design',
 	vfx: 'VFX Design',
+	architect: 'Architecture',
+	manage: 'Management',
+	talks: 'Tech Talks',
 	perf: 'Performance Optimization',
 	realtime: 'Realtime Multiplayer',
 	webrtc: 'WebRTC',
 	diffusion: 'Diffusion Models',
 	llm: 'LLM Models',
+	devops: 'Dev Ops',
+	oncall: 'On-Call',
+	gpu: 'GPU',
+	anim: 'Animation',
+	pro: 'Professional',
+	extra: 'Extracurricular',
 } as const;
 
 export const TAGS = {
 	subtle: 'Subtlety',
 	general: 'General',
-	pro: 'Professional',
-	extra: 'Extracurricular',
-	web: 'Web Dev',
-	games: 'Game Dev',
-	ai: 'AI Dev',
-	design: 'Design',
 	lead: 'Leadership',
 	onlyi: 'Only I Could Solve',
 	process: 'Process',
 	docs: 'Documentation',
 } as const;
+
+interface Category {
+	name: string;
+	skills: (keyof typeof SKILLS)[];
+}
+export const CATEGORIES = {
+	web: {
+		name: 'Web Developer',
+		skills: [
+			'ts',
+			'js',
+			'htmlcss',
+			'sql',
+			'nosql',
+			'node',
+			'react',
+			'svelte',
+			'aws',
+			'gcp',
+			'canvas',
+			'webgl',
+			'webrtc',
+		],
+	},
+	games: {
+		name: 'Game Developer',
+		skills: ['cs', 'unity', 'godot', 'consoles', 'vr', 'gamedesign', 'audio', 'vfx', 'gpu'],
+	},
+	ai: {
+		name: 'AI Developer',
+		skills: ['diffusion', 'llm'],
+	},
+	Lead: {
+		name: 'Engineering Lead',
+		skills: ['architect', 'manage', 'talks', 'oncall'],
+	},
+} as const satisfies Record<string, Category>;
 
 export const TAG_SUBTLE: keyof typeof TAGS = 'subtle';
