@@ -27,6 +27,7 @@ export type Session = typeof sessions.$inferSelect;
 export const projects = pgTable('projects', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
+	description: text('description'),
 	start: date('start').notNull().defaultNow(),
 	end: date('end'),
 	media: text('media')
@@ -46,8 +47,8 @@ export const achievements = pgTable('achievements', {
 		.notNull()
 		.references(() => projects.id),
 	summary: text('summary').notNull(),
-	description: text('description').default(''),
-	private: text('private').default(''),
+	description: text('description'),
+	private: text('private'),
 	media: text('media')
 		.array()
 		.notNull()
