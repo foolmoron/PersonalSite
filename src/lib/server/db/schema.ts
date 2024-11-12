@@ -28,8 +28,8 @@ export const projects = pgTable('projects', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
 	description: text('description'),
-	start: date('start').notNull().defaultNow(),
-	end: date('end'),
+	start: date('start', { mode: 'date' }).notNull().defaultNow(),
+	end: date('end', { mode: 'date' }),
 	media: text('media')
 		.array()
 		.notNull()

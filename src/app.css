@@ -1,3 +1,25 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+:root {
+}
+
+body {
+}
+
+.year-label {
+	font-size: 1.6rem;
+	background-color: white;
+}
+
+.gradient-bg {
+	background-color: #99f3ff;
+	background-image: radial-gradient(at 56% 68%, hsla(245, 74%, 70%, 1) 0px, transparent 50%),
+		radial-gradient(at 43% 70%, hsla(177, 69%, 70%, 1) 0px, transparent 50%),
+		radial-gradient(at 14% 44%, hsla(272, 82%, 64%, 1) 0px, transparent 50%),
+		radial-gradient(at 96% 89%, hsla(23, 76%, 60%, 1) 0px, transparent 50%),
+		radial-gradient(at 6% 77%, hsla(237, 83%, 67%, 1) 0px, transparent 50%),
+		radial-gradient(at 22% 10%, hsla(320, 65%, 70%, 1) 0px, transparent 50%),
+		radial-gradient(at 9% 41%, hsla(214, 82%, 76%, 1) 0px, transparent 50%);
+}
