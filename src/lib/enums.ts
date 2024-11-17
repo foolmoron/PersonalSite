@@ -3,6 +3,7 @@ export const COLORS = {
 	tech: '#a7c7ff',
 	platform: '#ffa6de',
 	activity: '#ffc280',
+	scope: '#c8c8c8',
 } as const satisfies Record<string, `#${string}`>;
 
 export const SKILLS = {
@@ -44,8 +45,11 @@ export const SKILLS = {
 	oncall: ['On-Call', 'activity'],
 	gpu: ['GPU', 'tech'],
 	anim: ['Animation', 'activity'],
-	pro: ['Professional', 'activity'],
-	extra: ['Extracurricular', 'activity'],
+	pro: ['Professional', 'scope'],
+	extra: ['Extracurricular', 'scope'],
+	startup: ['Startup', 'scope'],
+	enterprise: ['Enterprise', 'scope'],
+	solo: ['Sole Dev', 'scope'],
 } as const satisfies Record<string, [string, keyof typeof COLORS]>;
 
 export const TAGS = {

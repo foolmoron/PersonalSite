@@ -41,8 +41,8 @@ body {
 	background-size: 200% 200%;
 	background-position: var(--g1) var(--g2);
 	animation:
-		5s ease-in-out grad1 alternate-reverse infinite,
-		7s ease-in-out grad2 alternate-reverse infinite;
+		3s ease-in-out grad1 alternate-reverse infinite,
+		5s ease-in-out grad2 alternate-reverse infinite;
 }
 
 @keyframes grad1 {

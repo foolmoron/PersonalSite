@@ -23,7 +23,10 @@
 <details ontoggle={toggle}>
 	<summary>
 		<h1>
-			{project.name} [{project.start.getFullYear()} - {project.end?.getFullYear() ?? 'Present'}]
+			{project.name}
+			<span class="years">
+				{project.start.getFullYear()} - {project.end?.getFullYear() ?? 'Present'}
+			</span>
 		</h1>
 		<h2>
 			{project.description}
@@ -41,25 +44,37 @@
 </details>
 
 <style>
+	.years {
+		font-style: italic;
+		font-weight: 400;
+	}
 	details {
-		padding: 0.6rem 1rem;
-		background: none;
+		padding: 0.6rem;
 		background-color: white;
+		transition:
+			0.32s padding ease-out,
+			0.32s background ease-out;
 	}
 	summary {
+		padding: 0.2rem 0.4rem;
 		list-style-type: none;
 		cursor: pointer;
 		background-color: white;
+		border-radius: 4px;
+		transition:
+			0.32s padding ease-out,
+			0.32s background ease-out,
+			0.32s box-shadow ease-out;
 	}
-	details[open] {
-		padding: 0.4rem;
-		background: none;
+	details:is([open], :hover) {
+		background-color: transparent;
 	}
-	details[open] summary {
-		margin-bottom: 0.5rem;
-		padding: 0.2rem 0.6rem;
+	details:is([open], :hover) summary {
 		border-radius: 4px;
 		box-shadow: 1px 1px 1px 1px #000000f0;
+	}
+	details[open] summary {
+		margin-bottom: 0.4rem;
 	}
 	summary h1 {
 		font-weight: bold;
