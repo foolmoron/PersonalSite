@@ -16,7 +16,7 @@
 
 	function onclick(evt: Event) {
 		evt.preventDefault();
-		if (!(evt.currentTarget.parentNode as HTMLDetailsElement).open) {
+		if (!((evt.currentTarget as HTMLElement).parentNode as HTMLDetailsElement).open) {
 			pushState(`/project/${project.id}`, {
 				projectId: project.id,
 			});
