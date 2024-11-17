@@ -13,7 +13,19 @@ body {
 	background-color: white;
 }
 
+@property --g1 {
+	syntax: '<percentage>';
+	inherits: false;
+	initial-value: 0%;
+}
+@property --g2 {
+	syntax: '<percentage>';
+	inherits: false;
+	initial-value: 0%;
+}
 .gradient-bg {
+	--g1: 0%;
+	--g2: 0%;
 	background-color: #99f3ff;
 	background-image: radial-gradient(at 56% 68%, hsla(245, 74%, 70%, 1) 0px, transparent 50%),
 		radial-gradient(at 43% 70%, hsla(177, 69%, 70%, 1) 0px, transparent 50%),
@@ -22,4 +34,28 @@ body {
 		radial-gradient(at 6% 77%, hsla(237, 83%, 67%, 1) 0px, transparent 50%),
 		radial-gradient(at 22% 10%, hsla(320, 65%, 70%, 1) 0px, transparent 50%),
 		radial-gradient(at 9% 41%, hsla(214, 82%, 76%, 1) 0px, transparent 50%);
+	background-size: 200% 200%;
+	background-position: var(--g1) var(--g2);
+	animation:
+		5s ease-in-out grad1 alternate-reverse infinite,
+		7s ease-in-out grad2 alternate-reverse infinite;
+}
+
+@keyframes grad1 {
+	0%,
+	100% {
+		--g1: 10%;
+	}
+	50% {
+		--g1: 90%;
+	}
+}
+@keyframes grad2 {
+	0%,
+	100% {
+		--g2: 10%;
+	}
+	50% {
+		--g2: 90%;
+	}
 }

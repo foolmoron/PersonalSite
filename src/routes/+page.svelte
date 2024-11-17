@@ -6,8 +6,6 @@
 	let { data }: { data: PageServerData } = $props();
 </script>
 
-<h2>hi</h2>
-
 <div class="gradient-bg">
 	{#each data.years as { year, projects }}
 		<h1 class="year-label">{year}</h1>

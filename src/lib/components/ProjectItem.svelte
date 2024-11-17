@@ -34,7 +34,7 @@
 
 <style>
 	details {
-		padding: 0.6rem;
+		padding: 0.6rem 1rem;
 		background: none;
 		background-color: white;
 	}
@@ -48,7 +48,10 @@
 		background: none;
 	}
 	details[open] summary {
-		padding: 0.2rem;
+		margin-bottom: 0.5rem;
+		padding: 0.2rem 0.6rem;
+		border-radius: 4px;
+		box-shadow: 1px 1px 1px 1px #000000f0;
 	}
 	summary h1 {
 		font-weight: bold;
