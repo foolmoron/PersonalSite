@@ -1,6 +1,9 @@
 <script lang="ts">
+	import Tag from './Tag.svelte';
+
 	import AchievementItem from '$lib/components/AchievementItem.svelte';
-	import type { Achievement, Project } from '$lib/server/db/schema';
+	import { SKILLS } from '$lib/enums';
+	import { type Achievement, type Project } from '$lib/server/db/schema';
 
 	let { project }: { project: Project & { achievements: Achievement[] } } = $props();
 
@@ -25,6 +28,11 @@
 		<h2>
 			{project.description}
 		</h2>
+		<div class="skills-container hide-when-empty">
+			{#each project.skills as skill}
+				<Tag {skill}></Tag>
+			{/each}
+		</div>
 	</summary>
 
 	{#each project.achievements as achievement}
@@ -56,5 +64,10 @@
 	summary h1 {
 		font-weight: bold;
 		font-size: 1.2rem;
+	}
+	.skills-container {
+		display: flex;
+		gap: 0.2rem;
+		padding: 0.2rem 0;
 	}
 </style>

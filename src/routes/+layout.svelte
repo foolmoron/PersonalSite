@@ -3,11 +3,28 @@
 
 	import LoginLogout from '$lib/components/LoginLogout.svelte';
 	import '../app.css';
-	let { children, data } = $props();
+	import { COLORS, TAGS } from '$lib/enums';
+
+	const { children, data } = $props();
+
+	const skillsCss =
+		`${'<sty'}le>` +
+		Object.entries(COLORS)
+			.map(([k, v]) => `.skills-${k} { background-color: ${v}; }`)
+			.join('\n') +
+		`</style>`;
+	const tagsCss =
+		`${'<sty'}le>` +
+		Object.entries(TAGS)
+			.map(([k, [_, v]]) => `.tags-${k} { background-color: ${v}; }`)
+			.join('\n') +
+		`</style>`;
 </script>
 
 <svelte:head>
 	<title>Momin Khan - Game Developer and Software Engineer</title>
+	{@html skillsCss}
+	{@html tagsCss}
 </svelte:head>
 
 <LoginLogout user={data.user} />
