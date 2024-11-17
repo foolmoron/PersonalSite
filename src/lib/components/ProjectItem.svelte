@@ -60,7 +60,7 @@
 		list-style-type: none;
 		cursor: pointer;
 		background-color: white;
-		border-radius: 4px;
+		/* border-radius: 4px; */
 		transition:
 			0.32s padding ease-out,
 			0.32s background ease-out,
@@ -70,7 +70,6 @@
 		background-color: transparent;
 	}
 	details:is([open], :hover) summary {
-		border-radius: 4px;
 		box-shadow: 1px 1px 1px 1px #000000f0;
 	}
 	details[open] summary {

@@ -25,9 +25,10 @@
 	}
 	summary {
 		width: max-content;
-		padding: 0.1rem 0.5rem 0.3rem;
+		padding: 0.3rem 0.5rem;
 		background-color: white;
-		border-radius: 4px;
+		line-height: 1.2rem;
+		/* border-radius: 4px; */
 		box-shadow: 1px 1px 1px 0px #000000f0;
 		cursor: pointer;
 	}
@@ -48,7 +49,7 @@
 	.content {
 		padding: 0.2rem 0.5rem;
 		background-color: white;
-		border-radius: 4px;
+		/* border-radius: 4px; */
 		border-top-left-radius: 0;
 		box-shadow: 1px 1px 0px 1px #000000f0;
 	}
