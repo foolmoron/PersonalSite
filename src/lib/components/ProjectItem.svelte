@@ -2,26 +2,38 @@
 	import Tag from './Tag.svelte';
 
 	import AchievementItem from '$lib/components/AchievementItem.svelte';
-	import { SKILLS } from '$lib/enums';
 	import { type Achievement, type Project } from '$lib/server/db/schema';
+	import { afterNavigate, pushState } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
 
-	let { project }: { project: Project & { achievements: Achievement[] } } = $props();
+	interface Props {
+		project: Project & { achievements: Achievement[] };
+		open: boolean;
+	}
 
-	function toggle(evt: Event) {
-		if (!(evt.currentTarget as HTMLDetailsElement).open) {
-			return;
-		}
-		for (const d of document.querySelectorAll('details')) {
-			if (d === evt.currentTarget) {
-				continue;
-			}
-			d.open = false;
+	const { project, open }: Props = $props();
+
+	function onclick(evt: Event) {
+		evt.preventDefault();
+		if (!(evt.currentTarget.parentNode as HTMLDetailsElement).open) {
+			pushState(`/project/${project.id}`, {
+				projectId: project.id,
+			});
+		} else {
+			pushState(`/`, {
+				projectId: null,
+			});
 		}
 	}
+
+	const isOpen = $derived(
+		$page.state.projectId === undefined ? open : $page.state.projectId === project.id,
+	);
 </script>
 
-<details ontoggle={toggle}>
-	<summary>
+<details open={isOpen}>
+	<summary {onclick}>
 		<h1>
 			{project.name}
 			<span class="years">

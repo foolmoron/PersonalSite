@@ -1,7 +1,7 @@
 import { getProjectsByYear } from '$lib/server/projects';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (_event) => {
+export const load = (async (event) => {
 	const years = await getProjectsByYear();
-	return { years };
-};
+	return { id: event.params.id, years };
+}) satisfies PageServerLoad;
