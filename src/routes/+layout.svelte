@@ -5,8 +5,10 @@
 	import '../app.css';
 	import { COLORS, TAGS } from '$lib/enums';
 	import { injectSpeedInsights } from '@vercel/speed-insights';
+	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 
 	injectSpeedInsights();
+	injectAnalytics();
 
 	const { children, data } = $props();
 
