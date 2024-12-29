@@ -14,6 +14,10 @@
 
 	const { project, open }: Props = $props();
 
+	const isOpen = $derived(
+		$page.state.projectId === undefined ? open : $page.state.projectId === project.id,
+	);
+
 	function onclick(evt: Event) {
 		evt.preventDefault();
 		if (!((evt.currentTarget as HTMLElement).parentNode as HTMLDetailsElement).open) {
@@ -27,12 +31,17 @@
 		}
 	}
 
-	const isOpen = $derived(
-		$page.state.projectId === undefined ? open : $page.state.projectId === project.id,
-	);
+	function ontoggle(evt: Event) {
+		// Handle details opening via ctrl+f
+		if (!isOpen && evt instanceof ToggleEvent && evt.newState == 'open') {
+			pushState(`/project/${project.id}`, {
+				projectId: project.id,
+			});
+		}
+	}
 </script>
 
-<details open={isOpen}>
+<details open={isOpen} {ontoggle}>
 	<summary {onclick}>
 		<h1>
 			{project.name}
