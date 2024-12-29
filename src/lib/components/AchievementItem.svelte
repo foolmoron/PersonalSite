@@ -24,7 +24,7 @@
 		padding: 0.4rem 0.6rem;
 	}
 	summary {
-		width: max-content;
+		max-width: max-content;
 		padding: 0.3rem 0.5rem;
 		background-color: white;
 		line-height: 1.2rem;

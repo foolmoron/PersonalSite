@@ -11,7 +11,7 @@
 		<li>email</li>
 	</ul>
 	<p>
-		Hi, welcome to my resume builder. Click on the category of my work you are interested in:
-		General, Game, AI, Lead. Or click on the tags you're interested in below.
+		Hi, welcome to my resume builder. Click on the category of my work you are interested in: All,
+		Web, Game, AI, Lead. Or toggle the tags you're interested in below.
 	</p>
 </header>

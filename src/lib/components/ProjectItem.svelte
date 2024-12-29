@@ -102,6 +102,7 @@
 	}
 	.skills-container {
 		display: flex;
+		flex-wrap: wrap;
 		gap: 0.2rem;
 		padding: 0.2rem 0;
 	}

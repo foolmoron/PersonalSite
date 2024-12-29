@@ -92,7 +92,7 @@ export const CATEGORIES = {
 		name: 'AI Developer',
 		skills: ['diffusion', 'llm'],
 	},
-	Lead: {
+	lead: {
 		name: 'Engineering Lead',
 		skills: ['architect', 'manage', 'talks', 'oncall'],
 	},
