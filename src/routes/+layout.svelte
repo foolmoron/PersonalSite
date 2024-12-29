@@ -4,6 +4,9 @@
 	import LoginLogout from '$lib/components/LoginLogout.svelte';
 	import '../app.css';
 	import { COLORS, TAGS } from '$lib/enums';
+	import { injectSpeedInsights } from '@vercel/speed-insights';
+
+	injectSpeedInsights();
 
 	const { children, data } = $props();
 
