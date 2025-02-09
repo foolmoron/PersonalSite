@@ -12,3 +12,6 @@
 		{/each}
 	{/each}
 </div>
+
+<style>
+</style>

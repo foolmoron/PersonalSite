@@ -38,13 +38,13 @@ export const SKILLS = {
 	talks: ['Tech Talks', 'activity'],
 	perf: ['Performance Optimization', 'activity'],
 	realtime: ['Realtime Multiplayer', 'activity'],
+	anim: ['Animation', 'activity'],
+	devops: ['Dev Ops', 'activity'],
+	oncall: ['On-Call', 'activity'],
 	webrtc: ['WebRTC', 'tech'],
 	diffusion: ['Diffusion Models', 'tech'],
 	llm: ['LLM Models', 'tech'],
-	devops: ['Dev Ops', 'activity'],
-	oncall: ['On-Call', 'activity'],
 	gpu: ['GPU', 'tech'],
-	anim: ['Animation', 'activity'],
 	pro: ['Professional', 'scope'],
 	extra: ['Extracurricular', 'scope'],
 	startup: ['Startup', 'scope'],
@@ -63,11 +63,13 @@ export const TAGS = {
 
 interface Category {
 	name: string;
+	color: `#${string}`;
 	skills: (keyof typeof SKILLS)[];
 }
 export const CATEGORIES = {
 	web: {
 		name: 'Web Developer',
+		color: '#ffbc5f',
 		skills: [
 			'ts',
 			'js',
@@ -86,14 +88,17 @@ export const CATEGORIES = {
 	},
 	games: {
 		name: 'Game Developer',
+		color: '#ffbc5f',
 		skills: ['cs', 'unity', 'godot', 'consoles', 'vr', 'gamedesign', 'audio', 'vfx', 'gpu'],
 	},
 	ai: {
 		name: 'AI Developer',
+		color: '#ffbc5f',
 		skills: ['diffusion', 'llm'],
 	},
 	lead: {
 		name: 'Engineering Lead',
+		color: '#ffbc5f',
 		skills: ['architect', 'manage', 'talks', 'oncall'],
 	},
 } as const satisfies Record<string, Category>;

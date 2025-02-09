@@ -3,7 +3,7 @@
 
 	import LoginLogout from '$lib/components/LoginLogout.svelte';
 	import '../app.css';
-	import { COLORS, TAGS } from '$lib/enums';
+	import { CATEGORIES, COLORS, TAGS } from '$lib/enums';
 	import { injectSpeedInsights } from '@vercel/speed-insights';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 
@@ -13,15 +13,22 @@
 	const { children, data } = $props();
 
 	const skillsCss =
-		`${'<sty'}le>` +
+		`<style>` +
 		Object.entries(COLORS)
 			.map(([k, v]) => `.skills-${k} { background-color: ${v}; }`)
 			.join('\n') +
 		`</style>`;
 	const tagsCss =
-		`${'<sty'}le>` +
+		`<style>` +
 		Object.entries(TAGS)
 			.map(([k, [_, v]]) => `.tags-${k} { background-color: ${v}; }`)
+			.join('\n') +
+		`</style>`;
+	const categoriesCss =
+		`<style>` +
+		`.categories-everything { background-color: #c596ff; }\n` +
+		Object.entries(CATEGORIES)
+			.map(([k, v]) => `.categories-${k} { background-color: ${v.color}; }`)
 			.join('\n') +
 		`</style>`;
 </script>
@@ -30,6 +37,7 @@
 	<title>Momin Khan - Game Developer and Software Engineer</title>
 	{@html skillsCss}
 	{@html tagsCss}
+	{@html categoriesCss}
 </svelte:head>
 
 <LoginLogout user={data.user} />
