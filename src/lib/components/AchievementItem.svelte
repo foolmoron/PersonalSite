@@ -3,59 +3,136 @@
 	import Tag from './Tag.svelte';
 
 	let { achievement }: { achievement: Achievement } = $props();
+	const popoverId = `achievement-popover-${achievement.id}`;
 </script>
 
-<details>
-	<summary>
+<div class="achievement-container">
+	<button class="summary" popovertarget={popoverId} aria-haspopup="dialog">
 		<p>{achievement.summary}</p>
-		<div class="tags-container hide-when-empty">
+	</button>
+
+	<div id={popoverId} class="popup" popover="auto">
+		<div class="popup-header">
+			<h3>{achievement.summary}</h3>
+		</div>
+
+		<div class="tags-container">
 			{#each achievement.tags as tag}
-				<Tag {tag}></Tag>
+				<Tag {tag} />
 			{/each}
 		</div>
-	</summary>
-	<p class="content">
-		{achievement.description}
-	</p>
-</details>
+
+		<div class="content">
+			<p>{achievement.description}</p>
+		</div>
+	</div>
+</div>
 
 <style>
-	details {
+	.achievement-container {
+		position: relative;
 		padding: 0.4rem 0.6rem;
 	}
-	summary {
+
+	.summary {
 		max-width: max-content;
 		padding: 0.3rem 0.5rem;
 		background-color: white;
 		line-height: 1.2rem;
-		/* border-radius: 4px; */
-		box-shadow: 1px 1px 1px 0px #000000f0;
+		border: 1px solid #000000d3;
 		cursor: pointer;
-	}
-	summary p {
-		display: inline;
-	}
-	details[open] summary {
-		padding-bottom: 0;
-		border-bottom-left-radius: 0;
-		border-bottom-right-radius: 0;
-	}
-	details[open] summary p {
-		font-weight: bold;
-	}
-	details:not([open]) summary p {
 		font-size: 1.075rem;
+		font-family: inherit;
+		text-align: left;
 	}
-	.content {
-		padding: 0.2rem 0.5rem;
+
+	.summary:hover {
+		background-color: rgba(0, 0, 0, 0.06);
+		box-shadow: 1px 1px 1px 0px #000000d4;
+	}
+
+	.summary:focus-visible {
+		outline: 2px solid #0066cc;
+		outline-offset: 2px;
+	}
+
+	.popup {
+		position: fixed;
+		top: 10%;
+		left: 50%;
+		width: 80%;
+		max-width: 1000px;
+		height: max-content;
+		max-height: 80%;
+		transform: translate(-50%, 0);
+		opacity: 1;
 		background-color: white;
-		/* border-radius: 4px; */
-		border-top-left-radius: 0;
-		box-shadow: 1px 1px 0px 1px #000000f0;
+		box-shadow: 3px 3px 2px 1px rgb(0 0 0 / 48%);
+		padding: 1.5rem;
+		overflow-y: auto;
+		transition:
+			opacity 300ms ease-out,
+			transform 300ms ease-out,
+			display 300ms ease-out allow-discrete,
+			overlay 300ms ease-out allow-discrete;
 	}
+
+	.popup[popover]:not(:popover-open) {
+		display: none;
+		opacity: 0;
+		transform: translate(-50%, 2rem);
+	}
+
+	@starting-style {
+		.popup[popover]:popover-open {
+			opacity: 0;
+			transform: translate(-50%, 2rem);
+		}
+	}
+
+	.popup::backdrop {
+		background-color: rgba(0, 0, 0, 0.4);
+		opacity: 0;
+		transition:
+			opacity 300ms ease-out,
+			display 300ms ease-out allow-discrete,
+			overlay 300ms ease-out allow-discrete;
+	}
+	.popup[popover]:popover-open::backdrop {
+		opacity: 1;
+	}
+	@starting-style {
+		.popup[popover]:popover-open::backdrop {
+			opacity: 0;
+		}
+	}
+
+	.popup-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	.popup-header h3 {
+		margin: 0;
+		font-size: 1.4rem;
+	}
+
 	.tags-container {
-		display: inline-flex;
-		gap: 0.2rem;
-		margin-left: 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.3rem;
+		margin-bottom: 1rem;
+	}
+
+	.content {
+		flex-grow: 1;
+		overflow-y: auto;
+	}
+
+	.content p {
+		margin: 0;
+		line-height: 1.4;
 	}
 </style>
