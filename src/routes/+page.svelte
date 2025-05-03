@@ -1,6 +1,5 @@
 <script lang="ts">
 	import ProjectItem from '$lib/components/ProjectItem.svelte';
-
 	import type { PageServerData } from './$types';
 
 	let { data }: { data: PageServerData } = $props();
