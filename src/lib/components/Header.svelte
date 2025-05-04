@@ -36,11 +36,16 @@
 		for (const s of Array.from(skillsActive).filter((s) => SKILLS[s][1] != 'scope')) {
 			skillsActive.delete(s);
 		}
-		const categoriesToUse = categoriesActive.size > 0 ? categoriesActive : categories;
-		for (const c of categoriesToUse) {
-			const skillsToAdd = CATEGORIES[c].skills;
-			for (const skill of skillsToAdd) {
-				skillsActive.add(skill);
+		if (categoriesActive.size > 0) {
+			for (const c of categoriesActive) {
+				const skillsToAdd = CATEGORIES[c].skills;
+				for (const skill of skillsToAdd) {
+					skillsActive.add(skill);
+				}
+			}
+		} else {
+			for (const s of skills) {
+				skillsActive.add(s);
 			}
 		}
 	}

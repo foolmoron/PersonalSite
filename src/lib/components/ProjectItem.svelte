@@ -2,7 +2,8 @@
 	import Tag from './Tag.svelte';
 	import AchievementItem from '$lib/components/AchievementItem.svelte';
 	import { type Achievement, type Project } from '$lib/server/db/schema';
-	import { skillsActive } from '$lib/state/skills.svelte';
+	import { skills, skillsActive } from '$lib/state/skills.svelte';
+	import { SKILLS } from '$lib/enums';
 
 	interface Props {
 		project: Project & { achievements: Achievement[] };
@@ -12,8 +13,16 @@
 	const { project }: Props = $props();
 
 	// Use $derived to recalculate these whenever skillsActive changes
-	const skillsVisible = $derived(project.skills.filter((skill) => skillsActive.has(skill)));
-	const skillsHidden = $derived(project.skills.filter((skill) => !skillsActive.has(skill)));
+	const skillsVisible = $derived(
+		skills.filter(
+			(s) => (skillsActive.has(s) || SKILLS[s][1] == 'scope') && project.skills.includes(s),
+		),
+	);
+	const skillsHidden = $derived(
+		skills.filter(
+			(s) => !(skillsActive.has(s) || SKILLS[s][1] == 'scope') && project.skills.includes(s),
+		),
+	);
 	let showHiddenSkills = $state(false);
 </script>
 

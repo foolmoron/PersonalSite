@@ -91,6 +91,11 @@ export const CATEGORIES = {
 		color: '#ffbc5f',
 		skills: ['cs', 'unity', 'godot', 'consoles', 'vr', 'gamedesign', 'audio', 'vfx', 'gpu'],
 	},
+	realtime: {
+		name: 'Realtime Engineer',
+		color: '#ffbc5f',
+		skills: ['perf', 'realtime', 'anim', 'webgl', 'webrtc'],
+	},
 	ai: {
 		name: 'AI Developer',
 		color: '#ffbc5f',
