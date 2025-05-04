@@ -1,9 +1,108 @@
 <script lang="ts">
 	import type { Achievement } from '$lib/server/db/schema';
 	import Tag from './Tag.svelte';
+	import { onMount } from 'svelte';
+
+	// Maximum character length for URL slug (will round up to include the full word)
+	const MAX_SLUG_CHAR_LENGTH = 32;
 
 	let { achievement }: { achievement: Achievement } = $props();
 	const popoverId = `achievement-popover-${achievement.id}`;
+
+	// Create a URL-friendly slug from the achievement summary
+	function createSlug(text: string): string {
+		// Split text into words
+		const words = text
+			.replace(/[^\w\s-]/g, '')
+			.split(' ')
+			.filter((word) => word.length > 1);
+		let result = '';
+
+		// Add words until we exceed the character limit
+		for (const word of words) {
+			result += (result ? ' ' : '') + word;
+			if (result.length > MAX_SLUG_CHAR_LENGTH) {
+				break;
+			}
+		}
+
+		// Clean up and format the slug
+		return result.toLowerCase().replace(/\s+/g, '-');
+	}
+
+	// Combine ID with slug for the URL parameter
+	const urlParam = `${achievement.id}-${createSlug(achievement.summary)}`;
+
+	// Reference to the popup element
+	let popupElement: HTMLElement;
+
+	// Function to toggle the popup
+	function togglePopup(open: boolean) {
+		if (!popupElement) return;
+
+		if (open) {
+			popupElement.showPopover();
+		} else {
+			popupElement.hidePopover();
+		}
+	}
+
+	// Handle URL changes
+	onMount(() => {
+		// Check URL param on initial load
+		const urlParams = new URLSearchParams(window.location.search);
+		const itemParam = urlParams.get('item');
+
+		// Extract the ID part from the parameter (everything before the first dash)
+		const itemId = parseInt(itemParam?.split('-')[0] ?? '0');
+
+		// If URL contains this achievement's ID, open it
+		if (itemId === achievement.id) {
+			setTimeout(() => togglePopup(true), 0);
+		}
+
+		function handleToggle(event: Event) {
+			const isOpen = popupElement.matches(':popover-open');
+
+			if (isOpen) {
+				const url = new URL(window.location.href);
+				url.searchParams.set('item', urlParam);
+				history.pushState({ item: achievement.id }, '', url.toString());
+			} else {
+				setTimeout(() => {
+					// Only remove the query param if it matches this achievement's ID (another popup wasn't opened)
+					const url = new URL(window.location.href);
+					const currentItemParam = url.searchParams.get('item');
+					const currentItemId = parseInt(currentItemParam?.split('-')[0] ?? '0');
+
+					if (currentItemId === achievement.id) {
+						url.searchParams.delete('item');
+						history.pushState({ item: null }, '', url.toString());
+					}
+				}, 0);
+			}
+		}
+
+		function handlePopstate(event: PopStateEvent) {
+			const urlParams = new URLSearchParams(window.location.search);
+			const itemParam = urlParams.get('item');
+			const itemId = parseInt(itemParam?.split('-')[0] ?? '0');
+
+			// Toggle based on URL parameter, temporarily remove toggle listener to avoid history thrashing
+			popupElement.removeEventListener('toggle', handleToggle);
+			togglePopup(itemId === achievement.id);
+			setTimeout(() => {
+				popupElement.addEventListener('toggle', handleToggle);
+			}, 0);
+		}
+
+		popupElement.addEventListener('toggle', handleToggle);
+		window.addEventListener('popstate', handlePopstate);
+		return () => {
+			popupElement.removeEventListener('toggle', handleToggle);
+			window.removeEventListener('popstate', handlePopstate);
+		};
+	});
 </script>
 
 <div class="achievement-container">
@@ -11,7 +110,7 @@
 		<p>{achievement.summary}</p>
 	</button>
 
-	<div id={popoverId} class="popup" popover="auto">
+	<div id={popoverId} class="popup" popover="auto" bind:this={popupElement}>
 		<div class="popup-header">
 			<h3>{achievement.summary}</h3>
 		</div>
