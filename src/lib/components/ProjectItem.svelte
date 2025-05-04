@@ -2,6 +2,7 @@
 	import Tag from './Tag.svelte';
 	import AchievementItem from '$lib/components/AchievementItem.svelte';
 	import { type Achievement, type Project } from '$lib/server/db/schema';
+	import { skillsActive } from '$lib/state/skills.svelte';
 
 	interface Props {
 		project: Project & { achievements: Achievement[] };
@@ -9,6 +10,11 @@
 	}
 
 	const { project }: Props = $props();
+
+	// Use $derived to recalculate these whenever skillsActive changes
+	const skillsVisible = $derived(project.skills.filter((skill) => skillsActive.has(skill)));
+	const skillsHidden = $derived(project.skills.filter((skill) => !skillsActive.has(skill)));
+	let showHiddenSkills = $state(false);
 </script>
 
 <article class="project-item" id={project.id}>
@@ -25,9 +31,26 @@
 			{project.description}
 		</h2>
 		<div class="skills-container hide-when-empty">
-			{#each project.skills as skill}
+			{#each skillsVisible as skill}
 				<Tag {skill}></Tag>
 			{/each}
+
+			{#if skillsHidden.length > 0}
+				{#if showHiddenSkills}
+					{#each skillsHidden as skill}
+						<Tag {skill}></Tag>
+					{/each}
+				{:else}
+					<button
+						class="hidden-skills-button"
+						onclick={() => {
+							showHiddenSkills = true;
+						}}
+					>
+						Show {skillsHidden.length} hidden skill{skillsHidden.length !== 1 ? 's' : ''}...
+					</button>
+				{/if}
+			{/if}
 		</div>
 	</header>
 
@@ -73,5 +96,15 @@
 	}
 	.achievements {
 		padding: 0.2rem 0.4rem;
+	}
+	.hidden-skills-button {
+		font-size: 0.8rem;
+		border: none;
+		cursor: pointer;
+		color: #333;
+		font-style: italic;
+	}
+	.hidden-skills-button:hover {
+		text-decoration: underline;
 	}
 </style>

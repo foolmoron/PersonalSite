@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { CATEGORIES, SKILLS, TAGS } from '$lib/enums';
+	import { CATEGORIES, SKILLS } from '$lib/enums';
 	import { SvelteSet } from 'svelte/reactivity';
 	import TagClickable from './TagClickable.svelte';
+	import { skills, skillsActive } from '$lib/state/skills.svelte';
 
 	let {} = $props();
 
-	const skills = Object.keys(SKILLS) as (keyof typeof SKILLS)[];
-	const skillsActive = $state(new SvelteSet(skills));
-	let skillsCustomized = $state(false);
+	const skillsScopeOnly = skills.filter((s) => SKILLS[s][1] == 'scope');
 
 	function toggleSkill(skill: keyof typeof SKILLS) {
-		skillsCustomized = true;
 		if (skillsActive.has(skill)) {
 			skillsActive.delete(skill);
 		} else {
@@ -18,16 +16,32 @@
 		}
 	}
 
-	const categories = Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[];
-	let categoryActive = $state<keyof typeof CATEGORIES | null>(null);
+	function enableAllScopes() {
+		for (const s of skillsScopeOnly) {
+			skillsActive.add(s);
+		}
+	}
 
-	function chooseCategory(category: keyof typeof CATEGORIES | null) {
-		categoryActive = category;
-		skillsActive.clear();
-		skillsCustomized = false;
-		const skillsToAdd = category === null ? skills : CATEGORIES[category].skills;
-		for (const skill of skillsToAdd) {
-			skillsActive.add(skill);
+	const categories = Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[];
+	const categoriesActive = $state<SvelteSet<keyof typeof CATEGORIES>>(new SvelteSet());
+
+	function toggleCategory(category: keyof typeof CATEGORIES | null) {
+		if (category === null) {
+			categoriesActive.clear();
+		} else if (categoriesActive.has(category)) {
+			categoriesActive.delete(category);
+		} else {
+			categoriesActive.add(category);
+		}
+		for (const s of Array.from(skillsActive).filter((s) => SKILLS[s][1] != 'scope')) {
+			skillsActive.delete(s);
+		}
+		const categoriesToUse = categoriesActive.size > 0 ? categoriesActive : categories;
+		for (const c of categoriesToUse) {
+			const skillsToAdd = CATEGORIES[c].skills;
+			for (const skill of skillsToAdd) {
+				skillsActive.add(skill);
+			}
 		}
 	}
 </script>
@@ -40,24 +54,30 @@
 		<li>github</li>
 		<li>email</li>
 	</ul>
-	<p>Hi, welcome to my resume builder. Click on the category of my work you are interested in:</p>
+	<p>Hi, welcome to my resume builder.</p>
+	<p>Choose the categories of my work you're interested in:</p>
 	<div class="not-prose flex flex-wrap gap-[0.2rem] px-[0.2rem]">
 		<TagClickable
 			category={null}
-			style={!skillsCustomized && categoryActive == null ? 'active' : 'inactive'}
-			onclick={() => chooseCategory(null)}
+			style={categoriesActive.size == 0 ? 'active' : 'inactive'}
+			onclick={() => toggleCategory(null)}
 		></TagClickable>
 		{#each categories as category}
 			<TagClickable
 				{category}
-				style={!skillsCustomized && categoryActive == category ? 'active' : 'inactive'}
-				onclick={() => chooseCategory(category)}
+				style={categoriesActive.size > 0 && categoriesActive.has(category) ? 'active' : 'inactive'}
+				onclick={() => toggleCategory(category)}
 			></TagClickable>
 		{/each}
 	</div>
-	<p>Or toggle the tags you're interested in directly:</p>
+	<p>And toggle the scopes of work you're interested in:</p>
 	<div class="not-prose flex flex-wrap gap-[0.2rem] px-[0.2rem]">
-		{#each skills as skill}
+		<TagClickable
+			category={null}
+			style={skillsScopeOnly.every((s) => skillsActive.has(s)) ? 'active' : 'inactive'}
+			onclick={() => enableAllScopes()}
+		></TagClickable>
+		{#each skills.filter((s) => SKILLS[s][1] == 'scope') as skill}
 			<TagClickable
 				{skill}
 				style={skillsActive.has(skill) ? 'active' : 'inactive'}
