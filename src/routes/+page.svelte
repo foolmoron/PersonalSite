@@ -54,9 +54,6 @@
 
 <style>
 	.other-projects {
-		margin-top: 1.5rem;
-		border-top: 1px solid rgba(0, 0, 0, 0.1);
-		padding-top: 0.5rem;
 	}
 
 	.other-projects-summary {

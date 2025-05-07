@@ -107,7 +107,9 @@
 
 <div class="achievement-container">
 	<button class="summary" popovertarget={popoverId} aria-haspopup="dialog">
-		<p>{achievement.summary}</p>
+		<p>
+			{achievement.summary} <span style="font-size: 1.25rem; vertical-align: bottom;">ⓘ</span>
+		</p>
 	</button>
 
 	<div id={popoverId} class="popup" popover="auto" bind:this={popupElement}>
@@ -146,8 +148,8 @@
 	}
 
 	.summary:hover {
-		background-color: rgba(0, 0, 0, 0.06);
-		box-shadow: 1px 1px 1px 0px #000000d4;
+		background-color: rgba(0, 0, 0, 0.03);
+		box-shadow: 0px 0px 0px 1px #000000;
 	}
 
 	.summary:focus-visible {

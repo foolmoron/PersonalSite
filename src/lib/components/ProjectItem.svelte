@@ -56,7 +56,7 @@
 							showHiddenSkills = true;
 						}}
 					>
-						Show {skillsHidden.length} hidden skill{skillsHidden.length !== 1 ? 's' : ''}...
+						Show {skillsHidden.length} other skill{skillsHidden.length !== 1 ? 's' : ''}...
 					</button>
 				{/if}
 			{/if}
@@ -78,7 +78,6 @@
 	.project-item {
 		padding: 0.6rem;
 		background-color: white;
-		margin-bottom: 1rem;
 		scroll-margin-top: 2rem;
 	}
 	.project-header {
