@@ -19,13 +19,24 @@
 	let editSkillsArray: (keyof typeof SKILLS)[] = [];
 	let editNoEnd = false;
 
+	// New project form state
+	let newProjectId = '';
+	let newProjectName = '';
+	let newProjectDescription = '';
+	let newProjectStart = new Date().toISOString().slice(0, 10);
+	let newProjectEnd = new Date().toISOString().slice(0, 10);
+	let newProjectNoEnd = true;
+	let newProjectSkillsArray: (keyof typeof SKILLS)[] = [];
+	let newProjectFormError: string | null = null;
+	let showNewProjectForm = false;
+
 	function startEdit(project: Project) {
 		editingProjectId = project.id;
 		editBuffer = { ...project };
 		editName = project.name;
 		editDescription = project.description ?? '';
 		editStart = project.start ? project.start.toISOString().slice(0, 10) : '';
-		editEnd = project.end ? project.end.toISOString().slice(0, 10) : '';
+		editEnd = project.end ? project.end.toISOString().slice(0, 10) : editStart;
 		editNoEnd = !project.end;
 		editSkillsArray = Array.isArray(project.skills) ? [...project.skills] : [];
 		formError = null;
@@ -43,6 +54,25 @@
 		} else {
 			editSkillsArray = [...editSkillsArray, skill];
 		}
+	}
+
+	function toggleNewProjectSkill(skill: keyof typeof SKILLS) {
+		if (newProjectSkillsArray.includes(skill)) {
+			newProjectSkillsArray = newProjectSkillsArray.filter((s) => s !== skill);
+		} else {
+			newProjectSkillsArray = [...newProjectSkillsArray, skill];
+		}
+	}
+
+	function resetNewProjectForm() {
+		newProjectId = '';
+		newProjectName = '';
+		newProjectDescription = '';
+		newProjectStart = new Date().toISOString().slice(0, 10);
+		newProjectEnd = '';
+		newProjectNoEnd = true;
+		newProjectSkillsArray = [];
+		newProjectFormError = null;
 	}
 </script>
 
@@ -72,7 +102,7 @@
 									if (result.type === 'success') {
 										location.reload();
 									} else {
-										formError = result.error || 'Unknown error';
+										formError = result.data || 'Unknown error';
 									}
 								});
 						}}
@@ -162,6 +192,107 @@
 			{/key}
 		{/each}
 	{/each}
+
+	<div class="border-black-200 mt-8 border-t-2 pt-4">
+		{#if !showNewProjectForm}
+			<button
+				class="btn btn-primary btn-action rounded-sm px-4 py-2"
+				onclick={() => (showNewProjectForm = true)}
+			>
+				Add New Project
+			</button>
+		{:else}
+			<h3>Create New Project</h3>
+			<form
+				class="not-prose"
+				method="POST"
+				action="?/create"
+				onsubmit={(e) => {
+					e.preventDefault();
+					const form = e.currentTarget as HTMLFormElement;
+					const fd = new FormData(form);
+					fd.set('id', newProjectId);
+					fd.set('name', newProjectName);
+					fd.set('description', newProjectDescription);
+					fd.set('start', newProjectStart);
+					fd.set('end', newProjectNoEnd ? '' : newProjectEnd);
+					fd.set('skills', newProjectSkillsArray.join(', '));
+
+					const res = fetch(form.action, { method: 'POST', body: fd });
+					return res
+						.then((r) => r.json())
+						.then((result) => {
+							if (result.type === 'success') {
+								location.reload();
+							} else {
+								newProjectFormError = result.data || 'Unknown error';
+							}
+						});
+				}}
+			>
+				<div class="flex gap-2">
+					<input
+						type="text"
+						name="name"
+						bind:value={newProjectName}
+						class="text-lg font-bold"
+						placeholder="Project Name"
+						required
+					/>
+					<input
+						type="text"
+						name="id"
+						bind:value={newProjectId}
+						class="text-lg font-bold"
+						placeholder="project-id"
+						required
+					/>
+					<div class="flex gap-2">
+						<button type="submit" class="btn btn-primary btn-action rounded-sm px-2">Create</button>
+						<button
+							type="button"
+							onclick={() => {
+								showNewProjectForm = false;
+								resetNewProjectForm();
+							}}
+							class="btn btn-action rounded-sm px-2"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+				<div class="italic">
+					<input type="date" name="start" bind:value={newProjectStart} required />
+					to
+					<label style="display: inline-flex; align-items: center; gap: 0.3em;">
+						<input type="checkbox" bind:checked={newProjectNoEnd} /> Present
+					</label>
+					{#if !newProjectNoEnd}
+						<input type="date" name="end" bind:value={newProjectEnd} />
+					{/if}
+				</div>
+				<textarea
+					name="description"
+					bind:value={newProjectDescription}
+					rows="2"
+					class="w-full"
+					placeholder="Project description"
+				></textarea>
+				<div class="flex flex-wrap gap-1 py-1">
+					{#each skills as skill}
+						<TagClickable
+							{skill}
+							style={newProjectSkillsArray.includes(skill) ? 'active' : 'inactive'}
+							onclick={() => toggleNewProjectSkill(skill)}
+						/>
+					{/each}
+				</div>
+				{#if newProjectFormError}
+					<div class="text-red-600">{newProjectFormError}</div>
+				{/if}
+			</form>
+		{/if}
+	</div>
 </div>
 
 <style>
