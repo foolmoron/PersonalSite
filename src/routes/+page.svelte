@@ -4,6 +4,7 @@
 	import { skillsActive } from '$lib/state/skills.svelte';
 	import type { Project, Achievement } from '$lib/server/db/schema';
 	import { SKILLS } from '$lib/enums';
+	import Header from '$lib/components/Header.svelte';
 
 	let { data }: { data: PageServerData } = $props();
 
@@ -33,29 +34,26 @@
 	);
 </script>
 
-<div class="gradient-bg">
-	{#each yearsSorted as { year, activeProjects }}
-		{#each activeProjects as project}
-			<ProjectItem {project} open={false}></ProjectItem>
-		{/each}
-	{/each}
+<Header></Header>
 
-	{#if totalInactiveProjects > 0}
-		<details class="other-projects">
-			<summary class="other-projects-summary">Other Projects ({totalInactiveProjects})</summary>
-			{#each yearsSorted as { year, inactiveProjects }}
-				{#each inactiveProjects as project}
-					<ProjectItem {project} open={false}></ProjectItem>
-				{/each}
+{#each yearsSorted as { year, activeProjects }}
+	{#each activeProjects as project}
+		<ProjectItem {project} open={false}></ProjectItem>
+	{/each}
+{/each}
+
+{#if totalInactiveProjects > 0}
+	<details class="other-projects">
+		<summary class="other-projects-summary">Other Projects ({totalInactiveProjects})</summary>
+		{#each yearsSorted as { year, inactiveProjects }}
+			{#each inactiveProjects as project}
+				<ProjectItem {project} open={false}></ProjectItem>
 			{/each}
-		</details>
-	{/if}
-</div>
+		{/each}
+	</details>
+{/if}
 
 <style>
-	.other-projects {
-	}
-
 	.other-projects-summary {
 		font-size: 1.1rem;
 		font-weight: 600;

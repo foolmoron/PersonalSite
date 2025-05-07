@@ -42,8 +42,6 @@
 
 <LoginLogout user={data.user} />
 
-<Header></Header>
-
 {@render children()}
 
 <div style="height: 16rem;"></div>

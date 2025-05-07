@@ -48,7 +48,13 @@
 				{project.name}
 			</a>
 			<span class="years">
-				{project.start.getFullYear()} - {project.end?.getFullYear() ?? 'Present'}
+				{project.start.toLocaleDateString('en-US', {
+					month: 'short',
+					year: 'numeric',
+				})} - {project.end?.toLocaleDateString('en-US', {
+					month: 'short',
+					year: 'numeric',
+				}) ?? 'Present'}
 			</span>
 		</h1>
 		<h2>

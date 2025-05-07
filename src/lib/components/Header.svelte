@@ -3,8 +3,34 @@
 	import { SvelteSet } from 'svelte/reactivity';
 	import TagClickable from './TagClickable.svelte';
 	import { skills, skillsActive, tags, tagsActive } from '$lib/state/skills.svelte';
+	import { goto } from '$app/navigation';
 
 	let {} = $props();
+
+	// Click counter variables
+	const REQUIRED_CLICKS = 5;
+	const TIME_WINDOW_MS = 3000;
+
+	let clickCount = 0;
+	let firstClickTime = 0;
+
+	function handleHeaderClick() {
+		const now = Date.now();
+
+		// Reset counter if this is first click or if the time window expired
+		if (clickCount === 0 || now - firstClickTime > TIME_WINDOW_MS) {
+			clickCount = 1;
+			firstClickTime = now;
+		} else {
+			clickCount++;
+
+			// Redirect if we've reached the required clicks within the time window
+			if (clickCount >= REQUIRED_CLICKS) {
+				goto('/login/google');
+				clickCount = 0;
+			}
+		}
+	}
 
 	const skillsScopeOnly = skills.filter((s) => SKILLS[s][1] == 'scope');
 
@@ -58,7 +84,9 @@
 </script>
 
 <header class="prose max-w-6xl">
-	<h1>Momin Khan</h1>
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+	<h1 onclick={handleHeaderClick}>Momin Khan</h1>
 	<h2>Game Developer and Software Engineer</h2>
 	<ul>
 		<li>linkedin</li>
