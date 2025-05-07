@@ -65,6 +65,7 @@ interface Category {
 	name: string;
 	color: `#${string}`;
 	skills: (keyof typeof SKILLS)[];
+	tags: (keyof typeof TAGS)[];
 }
 export const CATEGORIES = {
 	web: {
@@ -85,26 +86,31 @@ export const CATEGORIES = {
 			'webgl',
 			'webrtc',
 		],
+		tags: ['onlyi', 'docs'],
 	},
 	games: {
 		name: 'Game Developer',
 		color: '#ffbc5f',
 		skills: ['cs', 'unity', 'godot', 'consoles', 'vr', 'gamedesign', 'audio', 'vfx', 'gpu'],
+		tags: ['onlyi', 'docs'],
 	},
 	realtime: {
 		name: 'Realtime Engineer',
 		color: '#ffbc5f',
 		skills: ['perf', 'realtime', 'anim', 'webgl', 'webrtc'],
+		tags: ['onlyi', 'docs'],
 	},
 	ai: {
 		name: 'AI Developer',
 		color: '#ffbc5f',
 		skills: ['diffusion', 'llm'],
+		tags: ['onlyi', 'docs'],
 	},
 	lead: {
 		name: 'Engineering Lead',
 		color: '#ffbc5f',
 		skills: ['architect', 'manage', 'talks', 'oncall'],
+		tags: ['process', 'lead', 'docs'],
 	},
 } as const satisfies Record<string, Category>;
 

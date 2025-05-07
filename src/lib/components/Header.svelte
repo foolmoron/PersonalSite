@@ -2,7 +2,7 @@
 	import { CATEGORIES, SKILLS } from '$lib/enums';
 	import { SvelteSet } from 'svelte/reactivity';
 	import TagClickable from './TagClickable.svelte';
-	import { skills, skillsActive } from '$lib/state/skills.svelte';
+	import { skills, skillsActive, tags, tagsActive } from '$lib/state/skills.svelte';
 
 	let {} = $props();
 
@@ -36,16 +36,22 @@
 		for (const s of Array.from(skillsActive).filter((s) => SKILLS[s][1] != 'scope')) {
 			skillsActive.delete(s);
 		}
+		tagsActive.clear();
 		if (categoriesActive.size > 0) {
 			for (const c of categoriesActive) {
-				const skillsToAdd = CATEGORIES[c].skills;
-				for (const skill of skillsToAdd) {
+				for (const skill of CATEGORIES[c].skills) {
 					skillsActive.add(skill);
+				}
+				for (const tag of CATEGORIES[c].tags) {
+					tagsActive.add(tag);
 				}
 			}
 		} else {
 			for (const s of skills) {
 				skillsActive.add(s);
+			}
+			for (const t of tags) {
+				tagsActive.add(t);
 			}
 		}
 	}
