@@ -1,12 +1,18 @@
 <script lang="ts">
-	import type { Achievement } from '$lib/server/db/schema';
+	import type { Achievement, Project } from '$lib/server/db/schema';
+	import ProjectHeader from './ProjectHeader.svelte';
 	import Tag from './Tag.svelte';
 	import { onMount } from 'svelte';
 
 	// Maximum character length for URL slug (will round up to include the full word)
 	const MAX_SLUG_CHAR_LENGTH = 32;
 
-	let { achievement }: { achievement: Achievement } = $props();
+	interface Props {
+		achievement: Achievement;
+		project?: Project;
+	}
+
+	let { achievement, project }: Props = $props();
 	const popoverId = `achievement-popover-${achievement.id}`;
 
 	// Create a URL-friendly slug from the achievement summary
@@ -51,7 +57,7 @@
 	onMount(() => {
 		// Check URL param on initial load
 		const urlParams = new URLSearchParams(window.location.search);
-		const itemParam = urlParams.get('item');
+		const itemParam = urlParams.get('a');
 
 		// Extract the ID part from the parameter (everything before the first dash)
 		const itemId = parseInt(itemParam?.split('-')[0] ?? '0');
@@ -66,18 +72,18 @@
 
 			if (isOpen) {
 				const url = new URL(window.location.href);
-				url.searchParams.set('item', urlParam);
-				history.pushState({ item: achievement.id }, '', url.toString());
+				url.searchParams.set('a', urlParam);
+				history.pushState({ a: achievement.id }, '', url.toString());
 			} else {
 				setTimeout(() => {
 					// Only remove the query param if it matches this achievement's ID (another popup wasn't opened)
 					const url = new URL(window.location.href);
-					const currentItemParam = url.searchParams.get('item');
+					const currentItemParam = url.searchParams.get('a');
 					const currentItemId = parseInt(currentItemParam?.split('-')[0] ?? '0');
 
 					if (currentItemId === achievement.id) {
-						url.searchParams.delete('item');
-						history.pushState({ item: null }, '', url.toString());
+						url.searchParams.delete('a');
+						history.pushState({ a: null }, '', url.toString());
 					}
 				}, 0);
 			}
@@ -85,7 +91,7 @@
 
 		function handlePopstate(event: PopStateEvent) {
 			const urlParams = new URLSearchParams(window.location.search);
-			const itemParam = urlParams.get('item');
+			const itemParam = urlParams.get('a');
 			const itemId = parseInt(itemParam?.split('-')[0] ?? '0');
 
 			// Toggle based on URL parameter, temporarily remove toggle listener to avoid history thrashing
@@ -113,18 +119,26 @@
 	</button>
 
 	<div id={popoverId} class="popup" popover="auto" bind:this={popupElement}>
-		<div class="popup-header">
-			<h3>{achievement.summary}</h3>
-		</div>
+		{#if project}
+			<div class="project-container">
+				<ProjectHeader {project} includeLink={false} showAllSkills />
+			</div>
+		{/if}
 
-		<div class="tags-container">
-			{#each achievement.tags as tag}
-				<Tag {tag} />
-			{/each}
-		</div>
+		<div class="popup-content-container">
+			<div class="popup-header">
+				<h3>{achievement.summary}</h3>
+			</div>
 
-		<div class="content">
-			<p>{achievement.description}</p>
+			<div class="tags-container">
+				{#each achievement.tags as tag}
+					<Tag {tag} />
+				{/each}
+			</div>
+
+			<div class="content">
+				<p>{achievement.description}</p>
+			</div>
 		</div>
 	</div>
 </div>
@@ -178,6 +192,18 @@
 			overlay 300ms ease-out allow-discrete;
 	}
 
+	.popup-content-container {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.project-container {
+		border-bottom: 1px solid #858585;
+		padding-bottom: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
 	.popup[popover]:not(:popover-open) {
 		display: none;
 		opacity: 0;
@@ -212,7 +238,6 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: 1rem;
 	}
 
 	.popup-header h3 {
@@ -224,7 +249,6 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.3rem;
-		margin-bottom: 1rem;
 	}
 
 	.content {

@@ -26,7 +26,7 @@
 		`</style>`;
 	const categoriesCss =
 		`<style>` +
-		`.categories-everything { background-color: #c596ff; }\n` +
+		`.categories-everything { background-color: #e0b2ff; }\n` +
 		Object.entries(CATEGORIES)
 			.map(([k, v]) => `.categories-${k} { background-color: ${v.color}; }`)
 			.join('\n') +
@@ -42,6 +42,20 @@
 
 <LoginLogout user={data.user} />
 
-{@render children()}
+<div class="container">
+	{@render children()}
+</div>
 
 <div style="height: 16rem;"></div>
+
+<style>
+	:global(body) {
+		padding: 0 0.6rem;
+	}
+
+	.container {
+		width: 100%;
+		max-width: 72rem;
+		margin: auto;
+	}
+</style>
