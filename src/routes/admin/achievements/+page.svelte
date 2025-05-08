@@ -36,7 +36,7 @@
 	let editAchievementBuffer: Achievement | null = null;
 	let editAchievementSummary = '';
 	let editAchievementDescription = '';
-	let editAchievementPrivate = false;
+	let editAchievementPrivate = '';
 	let editAchievementTagsArray: (keyof typeof TAGS)[] = [];
 	let editAchievementFormError: string | null = null;
 
@@ -45,7 +45,7 @@
 	let newAchievementProjectId = '';
 	let newAchievementSummary = '';
 	let newAchievementDescription = '';
-	let newAchievementPrivate = false;
+	let newAchievementPrivate = '';
 	let newAchievementTagsArray: (keyof typeof TAGS)[] = [];
 	let newAchievementFormError: string | null = null;
 
@@ -101,7 +101,7 @@
 		editAchievementBuffer = { ...achievement };
 		editAchievementSummary = achievement.summary;
 		editAchievementDescription = achievement.description ?? '';
-		editAchievementPrivate = achievement.private === 'true';
+		editAchievementPrivate = achievement.private ?? '';
 		editAchievementTagsArray = Array.isArray(achievement.tags) ? [...achievement.tags] : [];
 		editAchievementFormError = null;
 	}
@@ -118,7 +118,7 @@
 		newAchievementProjectId = projectId;
 		newAchievementSummary = '';
 		newAchievementDescription = '';
-		newAchievementPrivate = false;
+		newAchievementPrivate = '';
 		newAchievementTagsArray = [];
 		newAchievementFormError = null;
 	}
@@ -254,7 +254,7 @@
 												fd.set('projectId', achievement.projectId);
 												fd.set('summary', editAchievementSummary);
 												fd.set('description', editAchievementDescription);
-												fd.set('private', editAchievementPrivate ? 'true' : 'false');
+												fd.set('private', editAchievementPrivate);
 												fd.set('tags', editAchievementTagsArray.join(', '));
 												const res = fetch(form.action, { method: 'POST', body: fd });
 												return res
@@ -292,16 +292,19 @@
 													>
 												</div>
 											</div>
-											<div>
-												<label class="inline-flex items-center gap-1">
-													<input type="checkbox" bind:checked={editAchievementPrivate} />
-													Private
-												</label>
-											</div>
 											<textarea
 												name="description"
 												bind:value={editAchievementDescription}
 												rows="6"
+												class="w-full"
+											></textarea>
+											<label class="mt-2 mb-1 block font-bold" for="private"
+												>Private (admin-only):</label
+											>
+											<textarea
+												name="private"
+												bind:value={editAchievementPrivate}
+												rows="3"
 												class="w-full"
 											></textarea>
 											<div class="flex flex-wrap gap-1 py-1">
@@ -323,9 +326,6 @@
 										<div class="flex items-center gap-2">
 											<strong>{achievement.summary}</strong>
 											<span class="text-sm text-gray-500">(#{achievement.id})</span>
-											{#if achievement.private === 'true'}
-												<span class="text-sm font-bold text-red-600">(Private)</span>
-											{/if}
 											<button
 												onclick={() => startEditAchievement(achievement)}
 												class="btn btn-sm btn-action rounded-sm px-2 text-sm"
@@ -335,6 +335,9 @@
 										</div>
 										{#if achievement.description}
 											<div class="text-sm">{achievement.description}</div>
+										{/if}
+										{#if achievement.private}
+											<div class="text-sm italic">{achievement.private}</div>
 										{/if}
 										{#if achievement.tags && achievement.tags.length > 0}
 											<div class="flex flex-wrap gap-1 py-1">
@@ -365,7 +368,7 @@
 									fd.set('projectId', newAchievementProjectId);
 									fd.set('summary', newAchievementSummary);
 									fd.set('description', newAchievementDescription);
-									fd.set('private', newAchievementPrivate ? 'true' : 'false');
+									fd.set('private', newAchievementPrivate);
 									fd.set('tags', newAchievementTagsArray.join(', '));
 									const res = fetch(form.action, { method: 'POST', body: fd });
 									return res
@@ -388,18 +391,22 @@
 										placeholder="Achievement summary"
 										required
 									/>
-									<div>
-										<label class="inline-flex items-center gap-1">
-											<input type="checkbox" bind:checked={newAchievementPrivate} />
-											Private
-										</label>
-									</div>
 									<textarea
 										name="description"
 										bind:value={newAchievementDescription}
 										rows="6"
 										class="w-full"
 										placeholder="Achievement description"
+									></textarea>
+									<label class="mt-2 mb-1 block font-bold" for="private"
+										>Private (admin-only):</label
+									>
+									<textarea
+										name="private"
+										bind:value={newAchievementPrivate}
+										rows="3"
+										class="w-full"
+										placeholder="Private notes (only visible in admin)"
 									></textarea>
 									<div class="flex flex-wrap gap-1 py-1">
 										{#each tags as tag}
