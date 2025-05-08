@@ -26,15 +26,18 @@
 
 	const TAGS_ALWAYS_SHOW = new Set<keyof typeof TAGS>(['general']);
 	const TAGS_DEFAULT_HIDE = new Set<keyof typeof TAGS>(['subtle']);
+	const achievementsAll = project.achievements
+		.filter((a) => !a.private)
+		.toSorted((a, b) => a.id - b.id);
 	const achievementsVisible = $derived(
-		project.achievements.filter(
+		achievementsAll.filter(
 			(a) =>
 				!a.tags.some((t) => TAGS_DEFAULT_HIDE.has(t)) &&
 				a.tags.some((t) => TAGS_ALWAYS_SHOW.has(t) || tagsActive.has(t)),
 		),
 	);
 	const achievementsHidden = $derived(
-		project.achievements.filter(
+		achievementsAll.filter(
 			(a) => a.tags.some((t) => TAGS_DEFAULT_HIDE.has(t)) || !a.tags.some((t) => tagsActive.has(t)),
 		),
 	);

@@ -1,9 +1,9 @@
 import { getProjectsByYear } from '$lib/server/projects';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { projects } from '$lib/server/db/schema';
+import { projects, achievements } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import type { Project } from '$lib/server/db/schema';
+import type { Project, Achievement } from '$lib/server/db/schema';
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 
@@ -96,5 +96,107 @@ export const actions: Actions = {
 		});
 
 		return { success: true, projectId: id };
+	},
+
+	// Achievement actions
+	updateAchievement: async ({ request }) => {
+		const form = await request.formData();
+		const id = form.get('id');
+		const projectId = form.get('projectId');
+		const summary = form.get('summary');
+		const description = form.get('description');
+		const privateValue = form.get('private');
+		const tags = form.get('tags');
+
+		if (!id || typeof id !== 'string') {
+			return fail(400, { error: 'Achievement ID is required' });
+		}
+		if (!projectId || typeof projectId !== 'string') {
+			return fail(400, { error: 'Project ID is required' });
+		}
+		if (!summary || typeof summary !== 'string') {
+			return fail(400, { error: 'Summary is required' });
+		}
+		if (typeof description !== 'string') {
+			return fail(400, { error: 'Invalid form data: description' });
+		}
+		if (typeof privateValue !== 'string') {
+			return fail(400, { error: 'Invalid form data: private' });
+		}
+		if (typeof tags !== 'string') {
+			return fail(400, { error: 'Invalid form data: tags' });
+		}
+
+		const tagsArr = tags
+			.split(',')
+			.map((t) => t.trim())
+			.filter(Boolean);
+
+		await db
+			.update(achievements)
+			.set({
+				summary,
+				description: description.trim() || null,
+				private: privateValue,
+				tags: tagsArr as Achievement['tags'],
+			})
+			.where(eq(achievements.id, parseInt(id)));
+
+		return { success: true };
+	},
+
+	createAchievement: async ({ request }) => {
+		const form = await request.formData();
+		const projectId = form.get('projectId');
+		const summary = form.get('summary');
+		const description = form.get('description');
+		const privateValue = form.get('private');
+		const tags = form.get('tags');
+
+		if (!projectId || typeof projectId !== 'string') {
+			return fail(400, { error: 'Project ID is required' });
+		}
+		if (!summary || typeof summary !== 'string') {
+			return fail(400, { error: 'Summary is required' });
+		}
+		if (typeof description !== 'string') {
+			return fail(400, { error: 'Invalid form data: description' });
+		}
+		if (typeof privateValue !== 'string') {
+			return fail(400, { error: 'Invalid form data: private' });
+		}
+		if (typeof tags !== 'string') {
+			return fail(400, { error: 'Invalid form data: tags' });
+		}
+
+		const tagsArr = tags
+			.split(',')
+			.map((t) => t.trim())
+			.filter(Boolean);
+
+		await db.insert(achievements).values({
+			projectId,
+			summary: summary.trim(),
+			description: description.trim() || null,
+			private: privateValue,
+			tags: tagsArr as Achievement['tags'],
+		});
+
+		return { success: true };
+	},
+
+	archiveAchievement: async ({ request }) => {
+		const form = await request.formData();
+		const id = form.get('id');
+
+		if (!id || typeof id !== 'string') {
+			return fail(400, { error: 'Achievement ID is required' });
+		}
+
+		// For now, this is a placeholder action that doesn't do anything
+		// In the future, you could add an 'archived' field to the achievements table
+		// and set it to true here
+
+		return { success: true };
 	},
 };

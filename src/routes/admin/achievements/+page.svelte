@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import type { Project } from '$lib/server/db/schema';
-	import { SKILLS } from '$lib/enums';
-	import { skills } from '$lib/state/skills.svelte';
+	import type { Project, Achievement } from '$lib/server/db/schema';
+	import { SKILLS, TAGS } from '$lib/enums';
+	import { skills, tags } from '$lib/state/skills.svelte';
 	import TagClickable from '$lib/components/TagClickable.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 
@@ -29,6 +29,25 @@
 	let newProjectSkillsArray: (keyof typeof SKILLS)[] = [];
 	let newProjectFormError: string | null = null;
 	let showNewProjectForm = false;
+
+	// Achievement edit state
+	let editingAchievementId: number | null = null;
+	let editingAchievementProjectId: string | null = null;
+	let editAchievementBuffer: Achievement | null = null;
+	let editAchievementSummary = '';
+	let editAchievementDescription = '';
+	let editAchievementPrivate = false;
+	let editAchievementTagsArray: (keyof typeof TAGS)[] = [];
+	let editAchievementFormError: string | null = null;
+
+	// New achievement form state
+	let showNewAchievementForm = false;
+	let newAchievementProjectId = '';
+	let newAchievementSummary = '';
+	let newAchievementDescription = '';
+	let newAchievementPrivate = false;
+	let newAchievementTagsArray: (keyof typeof TAGS)[] = [];
+	let newAchievementFormError: string | null = null;
 
 	function startEdit(project: Project) {
 		editingProjectId = project.id;
@@ -73,6 +92,57 @@
 		newProjectNoEnd = true;
 		newProjectSkillsArray = [];
 		newProjectFormError = null;
+	}
+
+	// Achievement functions
+	function startEditAchievement(achievement: Achievement) {
+		editingAchievementId = achievement.id;
+		editingAchievementProjectId = achievement.projectId;
+		editAchievementBuffer = { ...achievement };
+		editAchievementSummary = achievement.summary;
+		editAchievementDescription = achievement.description ?? '';
+		editAchievementPrivate = achievement.private === 'true';
+		editAchievementTagsArray = Array.isArray(achievement.tags) ? [...achievement.tags] : [];
+		editAchievementFormError = null;
+	}
+
+	function cancelEditAchievement() {
+		editingAchievementId = null;
+		editingAchievementProjectId = null;
+		editAchievementBuffer = null;
+		editAchievementFormError = null;
+	}
+
+	function startNewAchievement(projectId: string) {
+		showNewAchievementForm = true;
+		newAchievementProjectId = projectId;
+		newAchievementSummary = '';
+		newAchievementDescription = '';
+		newAchievementPrivate = false;
+		newAchievementTagsArray = [];
+		newAchievementFormError = null;
+	}
+
+	function cancelNewAchievement() {
+		showNewAchievementForm = false;
+		newAchievementProjectId = '';
+		newAchievementFormError = null;
+	}
+
+	function toggleEditAchievementTag(tag: keyof typeof TAGS) {
+		if (editAchievementTagsArray.includes(tag)) {
+			editAchievementTagsArray = editAchievementTagsArray.filter((t) => t !== tag);
+		} else {
+			editAchievementTagsArray = [...editAchievementTagsArray, tag];
+		}
+	}
+
+	function toggleNewAchievementTag(tag: keyof typeof TAGS) {
+		if (newAchievementTagsArray.includes(tag)) {
+			newAchievementTagsArray = newAchievementTagsArray.filter((t) => t !== tag);
+		} else {
+			newAchievementTagsArray = [...newAchievementTagsArray, tag];
+		}
 	}
 </script>
 
@@ -132,7 +202,7 @@
 								<input type="date" name="end" bind:value={editEnd} />
 							{/if}
 						</div>
-						<textarea name="description" bind:value={editDescription} rows="2" class="w-full"
+						<textarea name="description" bind:value={editDescription} rows="6" class="w-full"
 						></textarea>
 						<div class="flex flex-wrap gap-1 py-1">
 							{#each skills as skill}
@@ -165,27 +235,208 @@
 					</div>
 				{/if}
 
-				<div>
-					{#if project.achievements.length > 0}
-						<ul>
-							{#each project.achievements as achievement}
-								<li>
-									<div>
-										<strong>{achievement.summary}</strong>
-										<span>(#{achievement.id})</span>
-										{#if achievement.private}
-											<span>(Private)</span>
-										{/if}
-										<div>{achievement.description || 'No description'}</div>
-										<div class="flex flex-wrap gap-1 py-1">
-											{#each achievement.tags as tag}
-												<Tag {tag} />
-											{/each}
+				<div class="achievement-container mt-2 ml-4">
+					<h4 class="text-lg font-medium">Achievements</h4>
+					{#if project.achievements && project.achievements.length > 0}
+						<ul class="space-y-3">
+							{#each project.achievements.toSorted((a, b) => a.id - b.id) as achievement}
+								<li class="border-l-2 border-gray-200 pl-3">
+									{#if editingAchievementId === achievement.id && editAchievementBuffer}
+										<form
+											class="not-prose"
+											method="POST"
+											action="?/updateAchievement"
+											onsubmit={(e) => {
+												e.preventDefault();
+												const form = e.currentTarget as HTMLFormElement;
+												const fd = new FormData(form);
+												fd.set('id', String(achievement.id));
+												fd.set('projectId', achievement.projectId);
+												fd.set('summary', editAchievementSummary);
+												fd.set('description', editAchievementDescription);
+												fd.set('private', editAchievementPrivate ? 'true' : 'false');
+												fd.set('tags', editAchievementTagsArray.join(', '));
+												const res = fetch(form.action, { method: 'POST', body: fd });
+												return res
+													.then((r) => r.json())
+													.then((result) => {
+														if (result.type === 'success') {
+															location.reload();
+														} else {
+															editAchievementFormError = result.data || 'Unknown error';
+														}
+													});
+											}}
+										>
+											<div class="flex gap-2">
+												<input
+													type="text"
+													name="summary"
+													bind:value={editAchievementSummary}
+													class="w-3xl text-base font-medium"
+												/>
+												<span>(#{achievement.id})</span>
+												<div class="flex gap-2">
+													<button type="submit" class="btn btn-primary btn-action rounded-sm px-2"
+														>Save</button
+													>
+													<button
+														type="button"
+														onclick={cancelEditAchievement}
+														class="btn btn-action rounded-sm px-2">Cancel</button
+													>
+													<button
+														type="button"
+														formaction="?/archiveAchievement"
+														class="btn btn-secondary btn-action rounded-sm px-2">Archive</button
+													>
+												</div>
+											</div>
+											<div>
+												<label class="inline-flex items-center gap-1">
+													<input type="checkbox" bind:checked={editAchievementPrivate} />
+													Private
+												</label>
+											</div>
+											<textarea
+												name="description"
+												bind:value={editAchievementDescription}
+												rows="6"
+												class="w-full"
+											></textarea>
+											<div class="flex flex-wrap gap-1 py-1">
+												{#each tags as tag}
+													<TagClickable
+														{tag}
+														style={editAchievementTagsArray.includes(tag as keyof typeof TAGS)
+															? 'active'
+															: 'inactive'}
+														onclick={() => toggleEditAchievementTag(tag as keyof typeof TAGS)}
+													/>
+												{/each}
+											</div>
+											{#if editAchievementFormError}
+												<div class="text-red-600">{editAchievementFormError}</div>
+											{/if}
+										</form>
+									{:else}
+										<div class="flex items-center gap-2">
+											<strong>{achievement.summary}</strong>
+											<span class="text-sm text-gray-500">(#{achievement.id})</span>
+											{#if achievement.private === 'true'}
+												<span class="text-sm font-bold text-red-600">(Private)</span>
+											{/if}
+											<button
+												onclick={() => startEditAchievement(achievement)}
+												class="btn btn-sm btn-action rounded-sm px-2 text-sm"
+											>
+												Edit
+											</button>
 										</div>
-									</div>
+										{#if achievement.description}
+											<div class="text-sm">{achievement.description}</div>
+										{/if}
+										{#if achievement.tags && achievement.tags.length > 0}
+											<div class="flex flex-wrap gap-1 py-1">
+												{#each achievement.tags as tag}
+													<Tag {tag} />
+												{/each}
+											</div>
+										{/if}
+									{/if}
 								</li>
 							{/each}
 						</ul>
+					{:else}
+						<p class="text-sm text-gray-500">No achievements yet</p>
+					{/if}
+
+					{#if showNewAchievementForm && newAchievementProjectId === project.id}
+						<div class="mt-3 border-t border-gray-200 pt-3">
+							<h5 class="font-medium">Add New Achievement</h5>
+							<form
+								class="not-prose"
+								method="POST"
+								action="?/createAchievement"
+								onsubmit={(e) => {
+									e.preventDefault();
+									const form = e.currentTarget as HTMLFormElement;
+									const fd = new FormData(form);
+									fd.set('projectId', newAchievementProjectId);
+									fd.set('summary', newAchievementSummary);
+									fd.set('description', newAchievementDescription);
+									fd.set('private', newAchievementPrivate ? 'true' : 'false');
+									fd.set('tags', newAchievementTagsArray.join(', '));
+									const res = fetch(form.action, { method: 'POST', body: fd });
+									return res
+										.then((r) => r.json())
+										.then((result) => {
+											if (result.type === 'success') {
+												location.reload();
+											} else {
+												newAchievementFormError = result.data || 'Unknown error';
+											}
+										});
+								}}
+							>
+								<div class="flex flex-col gap-2">
+									<input
+										type="text"
+										name="summary"
+										bind:value={newAchievementSummary}
+										class="text-base"
+										placeholder="Achievement summary"
+										required
+									/>
+									<div>
+										<label class="inline-flex items-center gap-1">
+											<input type="checkbox" bind:checked={newAchievementPrivate} />
+											Private
+										</label>
+									</div>
+									<textarea
+										name="description"
+										bind:value={newAchievementDescription}
+										rows="6"
+										class="w-full"
+										placeholder="Achievement description"
+									></textarea>
+									<div class="flex flex-wrap gap-1 py-1">
+										{#each tags as tag}
+											<TagClickable
+												{tag}
+												style={newAchievementTagsArray.includes(tag as keyof typeof TAGS)
+													? 'active'
+													: 'inactive'}
+												onclick={() => toggleNewAchievementTag(tag as keyof typeof TAGS)}
+											/>
+										{/each}
+									</div>
+									<div class="flex gap-2">
+										<button type="submit" class="btn btn-primary btn-action rounded-sm px-2"
+											>Create</button
+										>
+										<button
+											type="button"
+											onclick={cancelNewAchievement}
+											class="btn btn-action rounded-sm px-2"
+										>
+											Cancel
+										</button>
+									</div>
+									{#if newAchievementFormError}
+										<div class="text-red-600">{newAchievementFormError}</div>
+									{/if}
+								</div>
+							</form>
+						</div>
+					{:else}
+						<button
+							class="btn btn-sm btn-action mt-2 rounded-sm px-2"
+							onclick={() => startNewAchievement(project.id)}
+						>
+							Add Achievement
+						</button>
 					{/if}
 				</div>
 				<br />
@@ -274,7 +525,7 @@
 				<textarea
 					name="description"
 					bind:value={newProjectDescription}
-					rows="2"
+					rows="6"
 					class="w-full"
 					placeholder="Project description"
 				></textarea>
