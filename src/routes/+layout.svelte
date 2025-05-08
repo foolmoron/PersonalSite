@@ -35,6 +35,10 @@
 
 <svelte:head>
 	<title>Momin Khan - Game Developer and Software Engineer</title>
+	<meta
+		name="description"
+		content="Personal site and dynamic resume builder of Momin Khan - game developer and software engineer."
+	/>
 	{@html skillsCss}
 	{@html tagsCss}
 	{@html categoriesCss}
