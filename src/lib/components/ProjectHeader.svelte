@@ -6,11 +6,10 @@
 
 	interface Props {
 		project: Project;
-		includeLink?: boolean;
-		showAllSkills?: boolean;
+		infoOnly?: boolean;
 	}
 
-	const { project, includeLink = true, showAllSkills = false }: Props = $props();
+	const { project, infoOnly = false }: Props = $props();
 
 	const skillsVisible = $derived(
 		skills.filter(
@@ -22,20 +21,14 @@
 			(s) => !(skillsActive.has(s) || SKILLS[s][1] == 'scope') && project.skills.includes(s),
 		),
 	);
-	let showHiddenSkills = $state(showAllSkills);
+	let showHiddenSkills = $state(false);
 </script>
 
 <header class="project-header">
 	<h1>
-		{#if includeLink}
-			<a href={`#${project.id}`} class="project-link">
-				{project.name}
-			</a>
-		{:else}
-			<span class="project-link">
-				{project.name}
-			</span>
-		{/if}
+		<a href={`#${project.id}`} class="project-link">
+			{project.name}
+		</a>
 		<span class="years">
 			{project.start.toLocaleDateString('en-US', {
 				month: 'short',
@@ -49,28 +42,30 @@
 	<h2>
 		{project.description}
 	</h2>
-	<div class="skills-container hide-when-empty">
-		{#each skillsVisible as skill}
-			<Tag {skill}></Tag>
-		{/each}
+	{#if !infoOnly}
+		<div class="skills-container hide-when-empty">
+			{#each skillsVisible as skill}
+				<Tag {skill}></Tag>
+			{/each}
 
-		{#if skillsHidden.length > 0}
-			{#if showHiddenSkills}
-				{#each skillsHidden as skill}
-					<Tag {skill}></Tag>
-				{/each}
-			{:else}
-				<button
-					class="hidden-skills-button"
-					onclick={() => {
-						showHiddenSkills = true;
-					}}
-				>
-					Show {skillsHidden.length} other skill{skillsHidden.length !== 1 ? 's' : ''}...
-				</button>
+			{#if skillsHidden.length > 0}
+				{#if showHiddenSkills}
+					{#each skillsHidden as skill}
+						<Tag {skill}></Tag>
+					{/each}
+				{:else}
+					<button
+						class="hidden-skills-button"
+						onclick={() => {
+							showHiddenSkills = true;
+						}}
+					>
+						Show {skillsHidden.length} other skill{skillsHidden.length !== 1 ? 's' : ''}...
+					</button>
+				{/if}
 			{/if}
-		{/if}
-	</div>
+		</div>
+	{/if}
 </header>
 
 <style>

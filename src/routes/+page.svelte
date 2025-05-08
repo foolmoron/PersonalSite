@@ -32,13 +32,18 @@
 	const totalInactiveProjects = $derived(
 		yearsSorted.reduce((total, { inactiveProjects }) => total + inactiveProjects.length, 0),
 	);
+
+	// Collect all achievements across all projects for similarity comparison
+	const allAchievements: Achievement[] = $derived(
+		data.years.flatMap((year) => year.projects.flatMap((project) => project.achievements)),
+	);
 </script>
 
 <Header></Header>
 
 {#each yearsSorted as { year, activeProjects }}
 	{#each activeProjects as project}
-		<ProjectItem {project} open={false}></ProjectItem>
+		<ProjectItem {project} open={false} {allAchievements}></ProjectItem>
 	{/each}
 {/each}
 
@@ -47,7 +52,7 @@
 		<summary class="other-projects-summary">Other Projects ({totalInactiveProjects})</summary>
 		{#each yearsSorted as { year, inactiveProjects }}
 			{#each inactiveProjects as project}
-				<ProjectItem {project} open={false}></ProjectItem>
+				<ProjectItem {project} open={false} {allAchievements}></ProjectItem>
 			{/each}
 		{/each}
 	</details>

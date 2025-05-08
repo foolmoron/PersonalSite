@@ -3,6 +3,7 @@
 	import ProjectHeader from './ProjectHeader.svelte';
 	import Tag from './Tag.svelte';
 	import { onMount } from 'svelte';
+	import Portal from 'svelte-portal';
 
 	// Maximum character length for URL slug (will round up to include the full word)
 	const MAX_SLUG_CHAR_LENGTH = 32;
@@ -10,10 +11,136 @@
 	interface Props {
 		achievement: Achievement;
 		project?: Project;
+		allAchievements?: Achievement[];
 	}
 
-	let { achievement, project }: Props = $props();
+	let { achievement, project, allAchievements = [] }: Props = $props();
 	const popoverId = `achievement-popover-${achievement.id}`;
+
+	// Calculate similar achievements using a metric
+	const MAX_SIMILAR_ITEMS = 3;
+
+	/**
+	 * Calculates a similarity score between two achievements
+	 * Higher score = more similar
+	 */
+	function calculateSimilarity(a1: Achievement, a2: Achievement): number {
+		// Don't compare to self
+		if (a1.id === a2.id) return 0;
+
+		let score = 0;
+
+		// Project similarity (highest weight)
+		if (a1.projectId === a2.projectId) {
+			score += 5;
+		}
+
+		// Tag similarity - common tags increase similarity
+		const a1Tags = new Set(a1.tags);
+		for (const tag of a2.tags) {
+			if (a1Tags.has(tag)) {
+				score += 3;
+			}
+		}
+
+		// Description similarity - check for some common words
+		const commonKeywords = getCommonKeywords(a1.description || '', a2.description || '');
+		score += commonKeywords.length * 0.5;
+
+		// Summary similarity - check for common words
+		const commonSummaryWords = getCommonKeywords(a1.summary, a2.summary);
+		score += commonSummaryWords.length * 1;
+
+		return score;
+	}
+
+	/**
+	 * Extracts common significant words between two text strings
+	 */
+	function getCommonKeywords(text1: string, text2: string): string[] {
+		if (!text1 || !text2) return [];
+
+		// Skip common stop words
+		const stopWords = new Set([
+			'a',
+			'an',
+			'the',
+			'and',
+			'or',
+			'but',
+			'in',
+			'on',
+			'at',
+			'to',
+			'for',
+			'with',
+			'by',
+			'about',
+			'as',
+			'of',
+			'that',
+			'this',
+			'these',
+			'those',
+			'is',
+			'are',
+			'was',
+			'were',
+			'be',
+			'been',
+			'being',
+			'have',
+			'has',
+			'had',
+			'do',
+			'does',
+			'did',
+			'can',
+			'could',
+			'will',
+			'would',
+			'should',
+			'shall',
+			'i',
+			'you',
+			'he',
+			'she',
+			'it',
+			'we',
+			'they',
+		]);
+
+		// Extract words from both texts (remove punctuation, make lowercase)
+		const words1 = text1
+			.toLowerCase()
+			.replace(/[^\w\s]/g, '')
+			.split(/\s+/)
+			.filter((word) => word.length > 2 && !stopWords.has(word));
+
+		const words2 = text2
+			.toLowerCase()
+			.replace(/[^\w\s]/g, '')
+			.split(/\s+/)
+			.filter((word) => word.length > 2 && !stopWords.has(word));
+
+		// Find common words
+		const set2 = new Set(words2);
+		return words1.filter((word) => set2.has(word));
+	}
+
+	// Calculate similar achievements
+	const similarAchievements = $derived(
+		allAchievements
+			.filter((a) => a.id !== achievement.id)
+			.map((a) => ({
+				achievement: a,
+				similarityScore: calculateSimilarity(achievement, a),
+			}))
+			.filter((item) => item.similarityScore > 0)
+			.sort((a, b) => b.similarityScore - a.similarityScore)
+			.slice(0, MAX_SIMILAR_ITEMS)
+			.map((item) => item.achievement),
+	);
 
 	// Create a URL-friendly slug from the achievement summary
 	function createSlug(text: string): string {
@@ -51,6 +178,19 @@
 		} else {
 			popupElement.hidePopover();
 		}
+	}
+
+	// Function to handle "More Like This" link clicks
+	function handleSimilarItemClick(similarAchievementId: number) {
+		// First close the current popup
+		setTimeout(() => togglePopup(false), 1);
+
+		// We need to manually dispatch an event that other components can listen for
+		window.dispatchEvent(
+			new CustomEvent('achievement-selected', {
+				detail: { id: similarAchievementId },
+			}),
+		);
 	}
 
 	// Handle URL changes
@@ -102,11 +242,26 @@
 			}, 0);
 		}
 
+		// Listen for the custom achievement-selected event
+		function handleAchievementSelected(e: CustomEvent) {
+			const selectedId = e.detail?.id;
+			if (selectedId === achievement.id) {
+				// This is the achievement that should be opened, delay to allow <details> to open if needed
+				setTimeout(() => togglePopup(true), 0);
+			}
+		}
+
 		popupElement.addEventListener('toggle', handleToggle);
 		window.addEventListener('popstate', handlePopstate);
+		window.addEventListener('achievement-selected', handleAchievementSelected as EventListener);
+
 		return () => {
 			popupElement.removeEventListener('toggle', handleToggle);
 			window.removeEventListener('popstate', handlePopstate);
+			window.removeEventListener(
+				'achievement-selected',
+				handleAchievementSelected as EventListener,
+			);
 		};
 	});
 </script>
@@ -117,11 +272,13 @@
 			{achievement.summary} <span style="font-size: 1.25rem; vertical-align: bottom;">ⓘ</span>
 		</p>
 	</button>
+</div>
 
+<Portal target="body">
 	<div id={popoverId} class="popup" popover="auto" bind:this={popupElement}>
 		{#if project}
 			<div class="project-container">
-				<ProjectHeader {project} includeLink={false} showAllSkills />
+				<ProjectHeader {project} infoOnly />
 			</div>
 		{/if}
 
@@ -139,9 +296,27 @@
 			<div class="content">
 				<p>{achievement.description}</p>
 			</div>
+
+			{#if similarAchievements.length > 0}
+				<div class="similar-achievements">
+					<h4>More like this...</h4>
+					<ul>
+						{#each similarAchievements as similarAchievement}
+							<li>
+								<button
+									class="similar-item"
+									onclick={() => handleSimilarItemClick(similarAchievement.id)}
+								>
+									{similarAchievement.summary}
+								</button>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
 		</div>
 	</div>
-</div>
+</Portal>
 
 <style>
 	.achievement-container {
@@ -259,5 +434,42 @@
 	.content p {
 		margin: 0;
 		line-height: 1.4;
+	}
+
+	.similar-achievements {
+		margin-top: 1rem;
+	}
+
+	.similar-achievements h4 {
+		margin: 0 0 0.5rem 0;
+		font-size: 1.1rem;
+		font-weight: 500;
+	}
+
+	.similar-achievements ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.similar-achievements li {
+		margin-bottom: 0.3rem;
+	}
+
+	.similar-item {
+		background: none;
+		border: none;
+		padding: 0.2rem 0;
+		cursor: pointer;
+		text-align: left;
+		color: #0066cc;
+		font-family: inherit;
+		font-size: 0.95rem;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	.similar-item:hover {
+		color: #004499;
 	}
 </style>

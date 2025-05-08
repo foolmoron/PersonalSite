@@ -25,7 +25,7 @@
 
 ## Svelte
 
-- We are using Svelte 5 and SvelteKit 2, which have very different syntax from Svelte 4
+- We are using Svelte 5 and SvelteKit 2, which have very different syntax from Svelte 4 (e.g. $derived instead of $:, onclick instead of on:click)
 - Create new components when they need to be heavily reused, or when they get very large and complicated
 - Always follow the style that you see in existing components
 - Use CSS class styling, like the existing components
