@@ -360,6 +360,7 @@
 		box-shadow: 3px 3px 2px 1px rgb(0 0 0 / 48%);
 		padding: 1.5rem;
 		overflow-y: auto;
+		overscroll-behavior: contain;
 		transition:
 			opacity 300ms ease-out,
 			transform 300ms ease-out,

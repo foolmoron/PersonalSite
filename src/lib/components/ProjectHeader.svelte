@@ -26,7 +26,13 @@
 
 <header class="project-header">
 	<h1>
-		<a href={`#${project.id}`} class="project-link">
+		<a
+			href={`#${project.id}`}
+			class="project-link"
+			onclick={() => {
+				document.querySelectorAll('[popover]').forEach((p) => (p as HTMLElement).hidePopover());
+			}}
+		>
 			{project.name}
 		</a>
 		<span class="years">
