@@ -24,7 +24,7 @@
 	let showHiddenSkills = $state(false);
 </script>
 
-<header class="project-header">
+<header class="project-header" style={infoOnly ? 'padding: 0;' : ''}>
 	<h1>
 		<a
 			href={`#${project.id}`}
@@ -76,13 +76,13 @@
 
 <style>
 	.years {
-		font-style: italic;
+		/* font-style: italic; */
 		font-weight: 400;
+		font-size: 1rem;
 	}
 	.project-header {
 		padding: 0.2rem 0.4rem;
 		background-color: white;
-		margin-bottom: 0.4rem;
 	}
 	h1 {
 		font-weight: bold;

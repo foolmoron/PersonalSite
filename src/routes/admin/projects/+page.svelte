@@ -146,13 +146,12 @@
 	}
 </script>
 
-<div class="admin-list prose">
+<div class="admin-list">
 	{#each data.years as year}
 		{#each year.projects as project}
 			{#key project.id}
 				{#if editingProjectId === project.id && editBuffer}
 					<form
-						class="not-prose"
 						method="POST"
 						action="?/update"
 						onsubmit={(e) => {
@@ -243,7 +242,6 @@
 								<li class="border-l-2 border-gray-200 pl-3">
 									{#if editingAchievementId === achievement.id && editAchievementBuffer}
 										<form
-											class="not-prose"
 											method="POST"
 											action="?/updateAchievement"
 											onsubmit={(e) => {
@@ -358,7 +356,6 @@
 						<div class="mt-3 border-t border-gray-200 pt-3">
 							<h5 class="font-medium">Add New Achievement</h5>
 							<form
-								class="not-prose"
 								method="POST"
 								action="?/createAchievement"
 								onsubmit={(e) => {
@@ -462,7 +459,6 @@
 		{:else}
 			<h3>Create New Project</h3>
 			<form
-				class="not-prose"
 				method="POST"
 				action="?/create"
 				onsubmit={(e) => {

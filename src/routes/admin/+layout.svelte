@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<h1>Admin</h1>
+<h1 class="my-4 text-2xl">Admin</h1>
 
 <slot />
 

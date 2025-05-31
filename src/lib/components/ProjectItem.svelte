@@ -34,24 +34,26 @@
 <article class="project-item" id={project.id}>
 	<ProjectHeader {project} />
 
-	<section class="achievements">
-		{#each achievementsVisible as achievement}
-			<AchievementItem {achievement} {project} {allAchievements}></AchievementItem>
-		{/each}
+	{#if achievementsAll.length > 0}
+		<section class="achievements">
+			{#each achievementsVisible as achievement}
+				<AchievementItem {achievement} {project} {allAchievements}></AchievementItem>
+			{/each}
 
-		{#if achievementsHidden.length > 0}
-			<details class="hidden-achievements">
-				<summary class="hidden-achievements-summary">
-					Show {achievementsHidden.length} more achievement{achievementsHidden.length !== 1
-						? 's'
-						: ''}
-				</summary>
-				{#each achievementsHidden as achievement}
-					<AchievementItem {achievement} {project} {allAchievements}></AchievementItem>
-				{/each}
-			</details>
-		{/if}
-	</section>
+			{#if achievementsHidden.length > 0}
+				<details class="hidden-achievements">
+					<summary class="hidden-achievements-summary">
+						Show {achievementsHidden.length} more achievement{achievementsHidden.length !== 1
+							? 's'
+							: ''}
+					</summary>
+					{#each achievementsHidden as achievement}
+						<AchievementItem {achievement} {project} {allAchievements}></AchievementItem>
+					{/each}
+				</details>
+			{/if}
+		</section>
+	{/if}
 </article>
 
 <style>

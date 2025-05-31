@@ -16,7 +16,7 @@
 		</div>
 		<div class="nav-links">
 			<a href="/">Home</a>
-			<a href="/admin/achievements">Achievements</a>
+			<a href="/admin/projects">Projects</a>
 			<a href="/admin/apps">Apps</a>
 			<a href="/logout" data-sveltekit-reload>Sign out</a>
 		</div>

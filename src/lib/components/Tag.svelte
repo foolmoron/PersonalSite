@@ -6,6 +6,8 @@
 
 	export type TagProps = SkillOrTagOrCategory & {
 		style?: 'active' | 'inactive';
+		big?: boolean;
+		everythingString?: string;
 	};
 </script>
 
@@ -14,7 +16,7 @@
 
 	const props: TagProps = $props();
 
-	const styleClass = $derived(props.style ?? 'active');
+	const styleClass = $derived((props.style ?? 'active') + ' ' + (props.big ? 'big' : ''));
 </script>
 
 {#if props.skill !== undefined}
@@ -23,7 +25,9 @@
 	<div class="tag tags-{props.tag} {styleClass}">{TAGS[props.tag][0]}</div>
 {:else if props.category !== undefined}
 	{#if props.category == null}
-		<div class="tag categories-everything {styleClass}">Everything</div>
+		<div class="tag categories-everything {styleClass}">
+			{props.everythingString ?? 'Everything'}
+		</div>
 	{:else}
 		<div class="tag categories-{props.category} {styleClass}">
 			{CATEGORIES[props.category].name}
@@ -40,5 +44,8 @@
 
 	.tag.inactive {
 		opacity: 0.6;
+	}
+	.tag.big {
+		padding: 0.2rem 0.8rem;
 	}
 </style>
