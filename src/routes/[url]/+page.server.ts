@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	});
 
 	// Return 404 if no matching application found
-	if (!application) {
+	if (!application || application.archived) {
 		error(404, 'Application not found');
 	}
 
