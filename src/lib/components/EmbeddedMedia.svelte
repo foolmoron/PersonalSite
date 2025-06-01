@@ -2,9 +2,9 @@
 	const { url, videoTracks } = $props<{
 		url: string;
 	}>();
-
 	const mediaInfo = $derived(() => {
-		let determinedMediaType: 'image' | 'video' | 'youtube' | 'googledrive' | 'unknown' = 'unknown';
+		let determinedMediaType: 'image' | 'video' | 'youtube' | 'vimeo' | 'googledrive' | 'unknown' =
+			'unknown';
 		let determinedEmbedUrl: string | null = null;
 
 		if (url) {
@@ -29,6 +29,12 @@
 					if (videoId) {
 						determinedMediaType = 'youtube';
 						determinedEmbedUrl = `https://www.youtube.com/embed/${videoId}`;
+					}
+				} else if (urlObj.hostname === 'vimeo.com') {
+					const videoId = urlObj.pathname.split('/')[1];
+					if (videoId && /^\d+$/.test(videoId)) {
+						determinedMediaType = 'vimeo';
+						determinedEmbedUrl = `https://player.vimeo.com/video/${videoId}`;
 					}
 				} else if (
 					urlObj.hostname === 'drive.google.com' &&
@@ -65,6 +71,15 @@
 		allowfullscreen
 		class="embedded-media youtube"
 		title="YouTube video player"
+	></iframe>
+{:else if mediaInfo().mediaType === 'vimeo' && mediaInfo().embedUrl}
+	<iframe
+		src={mediaInfo().embedUrl}
+		frameborder="0"
+		allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+		allowfullscreen
+		class="embedded-media vimeo"
+		title="Vimeo video player"
 	></iframe>
 {:else if mediaInfo().mediaType === 'googledrive' && mediaInfo().embedUrl}
 	<iframe

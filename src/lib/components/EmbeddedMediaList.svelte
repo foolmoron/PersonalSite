@@ -124,8 +124,15 @@
 		height: 8rem;
 		object-fit: cover;
 	}
-
-	.media-thumbnail :global(.embedded-media.youtube),
+	.media-thumbnail :global(.embedded-media.vimeo) {
+		width: 14rem;
+		height: 8rem;
+	}
+	.media-thumbnail :global(.embedded-media.youtube) {
+		width: 14rem;
+		height: 8rem;
+		pointer-events: none;
+	}
 	.media-thumbnail :global(.embedded-media.googledrive) {
 		height: 8rem;
 		pointer-events: none;
