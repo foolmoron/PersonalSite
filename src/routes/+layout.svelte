@@ -6,6 +6,7 @@
 	import { CATEGORIES, COLORS, TAGS } from '$lib/enums';
 	import { injectSpeedInsights } from '@vercel/speed-insights';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
+	import PromptInjection from '$lib/components/PromptInjection.svelte';
 
 	injectSpeedInsights();
 	injectAnalytics();
@@ -45,6 +46,8 @@
 </svelte:head>
 
 <LoginLogout user={data.user} />
+
+<PromptInjection />
 
 <div class="container">
 	{@render children()}
