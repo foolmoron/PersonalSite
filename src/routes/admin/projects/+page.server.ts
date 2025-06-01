@@ -21,6 +21,7 @@ export const actions: Actions = {
 		const start = form.get('start');
 		const end = form.get('end');
 		const skills = form.get('skills');
+		const media = form.get('media');
 		if (typeof id !== 'string') {
 			return fail(400, { error: `Invalid form data: id` });
 		}
@@ -39,9 +40,16 @@ export const actions: Actions = {
 		if (typeof skills !== 'string') {
 			return fail(400, { error: `Invalid form data: skills` });
 		}
+		if (typeof media !== 'string') {
+			return fail(400, { error: `Invalid form data: media` });
+		}
 		const skillsArr = skills
 			.split(',')
 			.map((s) => s.trim())
+			.filter(Boolean);
+		const mediaArr = media
+			.split('\n')
+			.map((m) => m.trim())
 			.filter(Boolean);
 		await db
 			.update(projects)
@@ -51,6 +59,7 @@ export const actions: Actions = {
 				start: new Date(start),
 				end: end ? new Date(end) : null,
 				skills: skillsArr as Project['skills'],
+				media: mediaArr,
 			})
 			.where(eq(projects.id, id));
 		return { success: true };
@@ -64,6 +73,7 @@ export const actions: Actions = {
 		const start = form.get('start');
 		const end = form.get('end');
 		const skills = form.get('skills');
+		const media = form.get('media');
 
 		if (typeof id !== 'string' || !id.trim()) {
 			return fail(400, { error: 'Project ID is required' });
@@ -80,10 +90,17 @@ export const actions: Actions = {
 		if (typeof skills !== 'string') {
 			return fail(400, { error: 'Invalid form data: skills' });
 		}
+		if (typeof media !== 'string') {
+			return fail(400, { error: 'Invalid form data: media' });
+		}
 
 		const skillsArr = skills
 			.split(',')
 			.map((s) => s.trim())
+			.filter(Boolean);
+		const mediaArr = media
+			.split('\n')
+			.map((m) => m.trim())
 			.filter(Boolean);
 
 		await db.insert(projects).values({
@@ -93,6 +110,7 @@ export const actions: Actions = {
 			start: new Date(start),
 			end: end && typeof end === 'string' ? new Date(end) : null,
 			skills: skillsArr as Project['skills'],
+			media: mediaArr,
 		});
 
 		return { success: true, projectId: id };

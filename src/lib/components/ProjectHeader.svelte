@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Tag from './Tag.svelte';
+	import EmbeddedMediaList from './EmbeddedMediaList.svelte';
 	import { type Project } from '$lib/server/db/schema';
 	import { skills, skillsActive } from '$lib/state/skills.svelte';
 	import { SKILLS } from '$lib/enums';
@@ -71,6 +72,9 @@
 				{/if}
 			{/if}
 		</div>
+		{#if project.media && project.media.length > 0}
+			<EmbeddedMediaList urls={project.media} />
+		{/if}
 	{/if}
 </header>
 

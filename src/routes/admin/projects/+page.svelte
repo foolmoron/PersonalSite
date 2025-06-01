@@ -5,19 +5,20 @@
 	import { skills, tags } from '$lib/state/skills.svelte';
 	import TagClickable from '$lib/components/TagClickable.svelte';
 	import Tag from '$lib/components/Tag.svelte';
+	import EmbeddedMediaList from '$lib/components/EmbeddedMediaList.svelte';
 
 	export let data: PageData;
 
 	let editingProjectId: string | null = null;
 	let editBuffer: Project | null = null;
 	let formError: string | null = null;
-
 	let editName = '';
 	let editDescription = '';
 	let editStart = '';
 	let editEnd = '';
 	let editSkillsArray: (keyof typeof SKILLS)[] = [];
 	let editNoEnd = false;
+	let editMedia = '';
 
 	// New project form state
 	let newProjectId = '';
@@ -29,6 +30,7 @@
 	let newProjectSkillsArray: (keyof typeof SKILLS)[] = [];
 	let newProjectFormError: string | null = null;
 	let showNewProjectForm = false;
+	let newProjectMedia = '';
 
 	// Achievement edit state
 	let editingAchievementId: number | null = null;
@@ -39,6 +41,7 @@
 	let editAchievementPrivate = '';
 	let editAchievementTagsArray: (keyof typeof TAGS)[] = [];
 	let editAchievementFormError: string | null = null;
+	let editAchievementMedia = '';
 
 	// New achievement form state
 	let showNewAchievementForm = false;
@@ -48,6 +51,7 @@
 	let newAchievementPrivate = '';
 	let newAchievementTagsArray: (keyof typeof TAGS)[] = [];
 	let newAchievementFormError: string | null = null;
+	let newAchievementMedia = '';
 
 	function startEdit(project: Project) {
 		editingProjectId = project.id;
@@ -58,6 +62,7 @@
 		editEnd = project.end ? project.end.toISOString().slice(0, 10) : editStart;
 		editNoEnd = !project.end;
 		editSkillsArray = Array.isArray(project.skills) ? [...project.skills] : [];
+		editMedia = Array.isArray(project.media) ? project.media.join('\n') : '';
 		formError = null;
 	}
 
@@ -82,7 +87,6 @@
 			newProjectSkillsArray = [...newProjectSkillsArray, skill];
 		}
 	}
-
 	function resetNewProjectForm() {
 		newProjectId = '';
 		newProjectName = '';
@@ -92,6 +96,7 @@
 		newProjectNoEnd = true;
 		newProjectSkillsArray = [];
 		newProjectFormError = null;
+		newProjectMedia = '';
 	}
 
 	// Achievement functions
@@ -103,6 +108,7 @@
 		editAchievementDescription = achievement.description ?? '';
 		editAchievementPrivate = achievement.private ?? '';
 		editAchievementTagsArray = Array.isArray(achievement.tags) ? [...achievement.tags] : [];
+		editAchievementMedia = Array.isArray(achievement.media) ? achievement.media.join('\n') : '';
 		editAchievementFormError = null;
 	}
 
@@ -120,6 +126,7 @@
 		newAchievementDescription = '';
 		newAchievementPrivate = '';
 		newAchievementTagsArray = [];
+		newAchievementMedia = '';
 		newAchievementFormError = null;
 	}
 
@@ -164,6 +171,7 @@
 							fd.set('start', editStart);
 							fd.set('end', editNoEnd ? '' : editEnd);
 							fd.set('skills', editSkillsArray.join(', '));
+							fd.set('media', editMedia);
 							const res = fetch(form.action, { method: 'POST', body: fd });
 							return res
 								.then((r) => r.json())
@@ -203,6 +211,14 @@
 						</div>
 						<textarea name="description" bind:value={editDescription} rows="6" class="w-full"
 						></textarea>
+						<label class="mt-2 mb-1 block font-bold" for="media">Media URLs (one per line):</label>
+						<textarea
+							name="media"
+							bind:value={editMedia}
+							rows="3"
+							class="w-full"
+							placeholder="Enter media URLs, one per line"
+						></textarea>
 						<div class="flex flex-wrap gap-1 py-1">
 							{#each skills as skill}
 								<TagClickable
@@ -232,6 +248,12 @@
 							<Tag {skill} />
 						{/each}
 					</div>
+					{#if project.media && project.media.length > 0}
+						<div class="mt-2">
+							<h5 class="mb-1 font-medium">Media:</h5>
+							<EmbeddedMediaList urls={project.media} />
+						</div>
+					{/if}
 				{/if}
 
 				<div class="achievement-container mt-2 ml-4">
@@ -254,6 +276,7 @@
 												fd.set('description', editAchievementDescription);
 												fd.set('private', editAchievementPrivate);
 												fd.set('tags', editAchievementTagsArray.join(', '));
+												fd.set('media', editAchievementMedia);
 												const res = fetch(form.action, { method: 'POST', body: fd });
 												return res
 													.then((r) => r.json())
@@ -305,6 +328,16 @@
 												rows="3"
 												class="w-full"
 											></textarea>
+											<label class="mt-2 mb-1 block font-bold" for="media"
+												>Media URLs (one per line):</label
+											>
+											<textarea
+												name="media"
+												bind:value={editAchievementMedia}
+												rows="3"
+												class="w-full"
+												placeholder="Enter media URLs, one per line"
+											></textarea>
 											<div class="flex flex-wrap gap-1 py-1">
 												{#each tags as tag}
 													<TagClickable
@@ -344,6 +377,12 @@
 												{/each}
 											</div>
 										{/if}
+										{#if achievement.media && achievement.media.length > 0}
+											<div class="mt-2">
+												<h6 class="mb-1 text-sm font-medium">Media:</h6>
+												<EmbeddedMediaList urls={achievement.media} />
+											</div>
+										{/if}
 									{/if}
 								</li>
 							{/each}
@@ -367,6 +406,7 @@
 									fd.set('description', newAchievementDescription);
 									fd.set('private', newAchievementPrivate);
 									fd.set('tags', newAchievementTagsArray.join(', '));
+									fd.set('media', newAchievementMedia);
 									const res = fetch(form.action, { method: 'POST', body: fd });
 									return res
 										.then((r) => r.json())
@@ -404,6 +444,16 @@
 										rows="3"
 										class="w-full"
 										placeholder="Private notes (only visible in admin)"
+									></textarea>
+									<label class="mt-2 mb-1 block font-bold" for="media"
+										>Media URLs (one per line):</label
+									>
+									<textarea
+										name="media"
+										bind:value={newAchievementMedia}
+										rows="3"
+										class="w-full"
+										placeholder="Enter media URLs, one per line"
 									></textarea>
 									<div class="flex flex-wrap gap-1 py-1">
 										{#each tags as tag}
@@ -471,6 +521,7 @@
 					fd.set('start', newProjectStart);
 					fd.set('end', newProjectNoEnd ? '' : newProjectEnd);
 					fd.set('skills', newProjectSkillsArray.join(', '));
+					fd.set('media', newProjectMedia);
 
 					const res = fetch(form.action, { method: 'POST', body: fd });
 					return res
@@ -531,6 +582,14 @@
 					rows="6"
 					class="w-full"
 					placeholder="Project description"
+				></textarea>
+				<label class="mt-2 mb-1 block font-bold" for="media">Media URLs (one per line):</label>
+				<textarea
+					name="media"
+					bind:value={newProjectMedia}
+					rows="3"
+					class="w-full"
+					placeholder="Enter media URLs, one per line"
 				></textarea>
 				<div class="flex flex-wrap gap-1 py-1">
 					{#each skills as skill}

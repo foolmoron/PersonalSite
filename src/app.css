@@ -3,6 +3,7 @@
 
 :root {
 	--font-sans: 'Roboto', sans-serif;
+	scrollbar-gutter: stable;
 }
 
 body {

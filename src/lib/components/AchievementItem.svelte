@@ -331,6 +331,10 @@
 </Portal>
 
 <style>
+	:global(:root:has(.popup:popover-open)) {
+		overflow: hidden;
+	}
+
 	.achievement-container {
 		position: relative;
 		padding: 0.4rem 0.6rem;
