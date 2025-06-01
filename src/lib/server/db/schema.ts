@@ -1,12 +1,5 @@
-import { SKILLS, TAGS } from '../../enums';
 import { sql } from 'drizzle-orm';
-import { pgTable, text, integer, timestamp, pgEnum, date } from 'drizzle-orm/pg-core';
-
-const skillsTuple = Object.keys(SKILLS) as [keyof typeof SKILLS];
-export const skillsEnum = pgEnum('skills', skillsTuple);
-
-const tagsTuple = Object.keys(TAGS) as [keyof typeof TAGS];
-export const tagsEnum = pgEnum('tags', tagsTuple);
+import { pgTable, text, integer, timestamp, date, index, boolean } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
 	id: text('id').primaryKey(),
@@ -34,10 +27,10 @@ export const projects = pgTable('projects', {
 		.array()
 		.notNull()
 		.default(sql`array[]::text[]`),
-	skills: skillsEnum('skills')
+	skills: text('skills')
 		.array()
 		.notNull()
-		.default(sql.raw(`array${JSON.stringify(skillsTuple).replaceAll('"', "'")}::skills[]`)),
+		.default(sql`array[]::text[]`),
 });
 export type Project = typeof projects.$inferSelect;
 
@@ -53,9 +46,40 @@ export const achievements = pgTable('achievements', {
 		.array()
 		.notNull()
 		.default(sql`array[]::text[]`),
-	tags: tagsEnum('tags')
+	tags: text('tags')
 		.array()
 		.notNull()
-		.default(sql.raw(`array${JSON.stringify(tagsTuple).replaceAll('"', "'")}::tags[]`)),
+		.default(sql`array[]::text[]`),
 });
 export type Achievement = typeof achievements.$inferSelect;
+
+export const applications = pgTable(
+	'applications',
+	{
+		id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+		url: text('url').notNull().unique(), // unique URL slug for each application
+		archived: boolean('archived').notNull().default(false),
+		company: text('company').notNull(),
+		introduction: text('introduction').notNull(),
+		highlightedAchievementIds: integer('highlighted_achievement_ids')
+			.array()
+			.notNull()
+			.default(sql`array[]::integer[]`),
+		highlightedComments: text('highlighted_comments')
+			.array()
+			.notNull()
+			.default(sql`array[]::text[]`),
+		defaultCategories: text('default_categories')
+			.array()
+			.notNull()
+			.default(sql`array[]::text[]`),
+		defaultScopes: text('default_scopes')
+			.array()
+			.notNull()
+			.default(sql`array[]::text[]`),
+	},
+	(table) => ({
+		urlIdx: index('applications_url_idx').on(table.url),
+	}),
+);
+export type Application = typeof applications.$inferSelect;

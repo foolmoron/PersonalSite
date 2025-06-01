@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { TAGS } from '$lib/enums';
 	import type { Achievement, Project } from '$lib/server/db/schema';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import Tag from './Tag.svelte';
@@ -300,7 +301,7 @@
 			</div>
 
 			<div class="tags-container">
-				{#each achievement.tags as tag}
+				{#each achievement.tags as (keyof typeof TAGS)[] as tag}
 					<Tag {tag} />
 				{/each}
 			</div>

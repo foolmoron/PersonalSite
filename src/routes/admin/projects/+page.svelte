@@ -61,7 +61,9 @@
 		editStart = project.start ? project.start.toISOString().slice(0, 10) : '';
 		editEnd = project.end ? project.end.toISOString().slice(0, 10) : editStart;
 		editNoEnd = !project.end;
-		editSkillsArray = Array.isArray(project.skills) ? [...project.skills] : [];
+		editSkillsArray = (
+			Array.isArray(project.skills) ? [...project.skills] : []
+		) as (keyof typeof SKILLS)[];
 		editMedia = Array.isArray(project.media) ? project.media.join('\n') : '';
 		formError = null;
 	}
@@ -107,7 +109,9 @@
 		editAchievementSummary = achievement.summary;
 		editAchievementDescription = achievement.description ?? '';
 		editAchievementPrivate = achievement.private ?? '';
-		editAchievementTagsArray = Array.isArray(achievement.tags) ? [...achievement.tags] : [];
+		editAchievementTagsArray = (
+			Array.isArray(achievement.tags) ? [...achievement.tags] : []
+		) as (keyof typeof TAGS)[];
 		editAchievementMedia = Array.isArray(achievement.media) ? achievement.media.join('\n') : '';
 		editAchievementFormError = null;
 	}
@@ -152,6 +156,8 @@
 		}
 	}
 </script>
+
+<h1 class="my-4 text-2xl">Projects & Achievements</h1>
 
 <div class="admin-list">
 	{#each data.years as year}
@@ -244,7 +250,7 @@
 					</div>
 					<div>{project.description || 'No description'}</div>
 					<div class="flex flex-wrap gap-1 py-1">
-						{#each project.skills as skill}
+						{#each project.skills as (keyof typeof SKILLS)[] as skill}
 							<Tag {skill} />
 						{/each}
 					</div>
@@ -372,7 +378,7 @@
 										{/if}
 										{#if achievement.tags && achievement.tags.length > 0}
 											<div class="flex flex-wrap gap-1 py-1">
-												{#each achievement.tags as tag}
+												{#each achievement.tags as (keyof typeof TAGS)[] as tag}
 													<Tag {tag} />
 												{/each}
 											</div>
