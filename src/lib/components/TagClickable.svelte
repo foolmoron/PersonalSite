@@ -7,7 +7,10 @@
 </script>
 
 <!-- svelte-ignore a11y_invalid_attribute -->
-<a role="button" href="javascript:;" {onclick}><Tag {...props}></Tag></a>
+<button {onclick}><Tag {...props}></Tag></button>
 
 <style>
+	button {
+		cursor: pointer;
+	}
 </style>

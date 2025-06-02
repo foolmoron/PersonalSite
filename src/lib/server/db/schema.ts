@@ -61,6 +61,7 @@ export const applications = pgTable(
 		archived: boolean('archived').notNull().default(false),
 		company: text('company').notNull(),
 		introduction: text('introduction').notNull(),
+		role: text('role').notNull(),
 		highlightedAchievementIds: integer('highlighted_achievement_ids')
 			.array()
 			.notNull()

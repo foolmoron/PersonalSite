@@ -427,11 +427,7 @@
 
 					<div class="mb-2">
 						<strong>URL:</strong>
-						<a
-							href="/{application.url}"
-							target="_blank"
-							class="text-blue-600 hover:text-blue-800 hover:underline">/{application.url}</a
-						>
+						<a href="/{application.url}" target="_blank">/{application.url}</a>
 					</div>
 
 					<div class="mb-2">

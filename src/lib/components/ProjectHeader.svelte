@@ -72,9 +72,9 @@
 				{/if}
 			{/if}
 		</div>
-		{#if project.media && project.media.length > 0}
-			<EmbeddedMediaList urls={project.media} />
-		{/if}
+	{/if}
+	{#if project.media && project.media.length > 0}
+		<EmbeddedMediaList urls={project.media} />
 	{/if}
 </header>
 

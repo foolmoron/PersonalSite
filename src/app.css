@@ -9,6 +9,14 @@
 body {
 }
 
+a {
+	color: var(--color-blue-600);
+}
+a:hover {
+	text-decoration: underline;
+	color: var(--color-blue-800);
+}
+
 .hide-when-empty:empty {
 	display: none !important;
 }

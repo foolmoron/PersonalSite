@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Header from '../lib/components/Header.svelte';
-
 	import LoginLogout from '$lib/components/LoginLogout.svelte';
 	import '../app.css';
 	import { CATEGORIES, COLORS, TAGS } from '$lib/enums';

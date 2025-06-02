@@ -228,6 +228,7 @@
 		height: auto;
 	}
 	.media-container :global(.embedded-media.youtube),
+	.media-container :global(.embedded-media.vimeo),
 	.media-container :global(.embedded-media.googledrive) {
 		width: min(90vw, 1200px);
 		height: min(90vh, 675px);

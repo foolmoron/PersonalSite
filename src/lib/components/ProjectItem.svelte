@@ -4,7 +4,6 @@
 	import { type Achievement, type Project } from '$lib/server/db/schema';
 	import { tagsActive } from '$lib/state/skills.svelte';
 	import { TAGS } from '$lib/enums';
-	import { onMount } from 'svelte';
 
 	interface Props {
 		project: Project & { achievements: Achievement[] };
@@ -20,13 +19,15 @@
 	const achievementsVisible = $derived(
 		achievementsAll.filter(
 			(a) =>
-				!a.tags.some((t) => TAGS_DEFAULT_HIDE.has(t)) &&
-				a.tags.some((t) => TAGS_ALWAYS_SHOW.has(t) || tagsActive.has(t)),
+				!(a.tags as (keyof typeof TAGS)[]).some((t) => TAGS_DEFAULT_HIDE.has(t)) &&
+				(a.tags as (keyof typeof TAGS)[]).some((t) => TAGS_ALWAYS_SHOW.has(t) || tagsActive.has(t)),
 		),
 	);
 	const achievementsHidden = $derived(
 		achievementsAll.filter(
-			(a) => a.tags.some((t) => TAGS_DEFAULT_HIDE.has(t)) || !a.tags.some((t) => tagsActive.has(t)),
+			(a) =>
+				(a.tags as (keyof typeof TAGS)[]).some((t) => TAGS_DEFAULT_HIDE.has(t)) ||
+				!(a.tags as (keyof typeof TAGS)[]).some((t) => tagsActive.has(t)),
 		),
 	);
 </script>

@@ -1,8 +1,16 @@
 <script lang="ts">
-	import { CATEGORIES, SKILLS } from '$lib/enums';
-	import { SvelteSet } from 'svelte/reactivity';
+	import { SKILLS } from '$lib/enums';
 	import TagClickable from './TagClickable.svelte';
-	import { skills, skillsActive, tags, tagsActive } from '$lib/state/skills.svelte';
+	import {
+		categories,
+		categoriesActive,
+		enableAllScopes,
+		skills,
+		skillsActive,
+		skillsScopeOnly,
+		toggleCategory,
+		toggleSkill,
+	} from '$lib/state/skills.svelte';
 	import { goto } from '$app/navigation';
 
 	let {} = $props();
@@ -31,60 +39,6 @@
 			}
 		}
 	}
-
-	const skillsScopeOnly = skills.filter((s) => SKILLS[s][1] == 'scope');
-	const skillsWithoutScope = skills.filter((s) => SKILLS[s][1] != 'scope');
-
-	function toggleSkill(skill: keyof typeof SKILLS) {
-		if (skillsActive.has(skill)) {
-			skillsActive.delete(skill);
-		} else {
-			skillsActive.add(skill);
-		}
-	}
-
-	function enableAllScopes() {
-		for (const s of skillsScopeOnly) {
-			skillsActive.add(s);
-		}
-	}
-
-	const categories = Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[];
-	const categoriesActive = $state<SvelteSet<keyof typeof CATEGORIES>>(new SvelteSet(categories));
-
-	function toggleCategory(category: keyof typeof CATEGORIES | null) {
-		if (category === null) {
-			categoriesActive.clear();
-		} else if (categoriesActive.has(category)) {
-			categoriesActive.delete(category);
-		} else {
-			categoriesActive.add(category);
-		}
-		for (const s of Array.from(skillsActive).filter((s) => SKILLS[s][1] != 'scope')) {
-			skillsActive.delete(s);
-		}
-		tagsActive.clear();
-		if (categoriesActive.size > 0) {
-			for (const c of categoriesActive) {
-				for (const skill of CATEGORIES[c].skills) {
-					skillsActive.add(skill);
-				}
-				for (const tag of CATEGORIES[c].tags) {
-					tagsActive.add(tag);
-				}
-			}
-		} else {
-			for (const c of categories) {
-				categoriesActive.add(c);
-			}
-			for (const s of skillsWithoutScope) {
-				skillsActive.add(s);
-			}
-			for (const t of tags) {
-				tagsActive.add(t);
-			}
-		}
-	}
 </script>
 
 <header class="max-w-6xl">
@@ -92,7 +46,7 @@
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<h1 class="text-4xl" onclick={handleHeaderClick}>Momin Khan</h1>
 	<h3 class="text-xl">Game Developer and Software Engineer</h3>
-	<div class="mt-2 mb-8 flex gap-3">
+	<div class="mt-2 mb-6 flex gap-3">
 		<a
 			href="https://www.linkedin.com/in/momink/"
 			target="_blank"
@@ -122,48 +76,6 @@
 			Email
 		</a>
 	</div>
-	<p class="my-4">
-		Hi, welcome to my interactive resume builder. Don't be shy, it's easy! I had this idea after
-		spending too much time tailoring my resume for dozens of jobs across 3 different industries.
-		Here you can see my work at a high level, and dig into particular projects and achievements that
-		interest you.
-	</p>
-	<p class="my-2">First, toggle the categories of my work you're interested in:</p>
-	<div class="flex flex-wrap gap-[0.2rem] px-[0.2rem]">
-		<TagClickable
-			category={null}
-			style={categories.every((c) => categoriesActive.has(c)) ? 'active' : 'inactive'}
-			big
-			onclick={() => toggleCategory(null)}
-		></TagClickable>
-		{#each categories as category}
-			<TagClickable
-				{category}
-				style={categoriesActive.size > 0 && categoriesActive.has(category) ? 'active' : 'inactive'}
-				big
-				onclick={() => toggleCategory(category)}
-			></TagClickable>
-		{/each}
-	</div>
-	<p class="my-2">Then, toggle the scopes of work you're interested in:</p>
-	<div class="flex flex-wrap gap-[0.2rem] px-[0.2rem]">
-		<TagClickable
-			category={null}
-			everythingString="All Scopes"
-			style={skillsScopeOnly.every((s) => skillsActive.has(s)) ? 'active' : 'inactive'}
-			big
-			onclick={() => enableAllScopes()}
-		></TagClickable>
-		{#each skills.filter((s) => SKILLS[s][1] == 'scope') as skill}
-			<TagClickable
-				{skill}
-				style={skillsActive.has(skill) ? 'active' : 'inactive'}
-				big
-				onclick={() => toggleSkill(skill)}
-			></TagClickable>
-		{/each}
-	</div>
-	<br />
 </header>
 
 <style>
