@@ -32,13 +32,14 @@
 	let editUrl = $state('');
 	let editArchived = $state(false);
 	let editCompany = $state('');
+	let editRole = $state('');
 	let editIntroduction = $state('');
 	let editHighlightedAchievements = $state<HighlightedAchievementItem[]>([]);
 	let editDefaultCategoriesArray = $state<(keyof typeof CATEGORIES)[]>([]);
-	let editDefaultScopesArray = $state<(keyof typeof SKILLS)[]>([]);
-	// New application form state
+	let editDefaultScopesArray = $state<(keyof typeof SKILLS)[]>([]); // New application form state
 	let newUrl = $state('');
 	let newCompany = $state('');
+	let newRole = $state('');
 	let newIntroduction = $state('');
 	let newHighlightedAchievements = $state<HighlightedAchievementItem[]>([]);
 	let newDefaultCategoriesArray = $state<(keyof typeof CATEGORIES)[]>([]);
@@ -112,13 +113,13 @@
 		app.highlightedAchievementsData_parsed = [];
 		return [];
 	}
-
 	function startEdit(application: ClientApplication) {
 		editingId = application.id;
 		editBuffer = { ...application }; // Shallow copy is fine for buffer, deep for actual edit fields
 		editUrl = application.url;
 		editArchived = application.archived;
 		editCompany = application.company;
+		editRole = application.role;
 		editIntroduction = application.introduction;
 		editHighlightedAchievements = parseHighlightedAchievements(application);
 
@@ -140,6 +141,7 @@
 	function resetNewForm() {
 		newUrl = '';
 		newCompany = '';
+		newRole = '';
 		newIntroduction = '';
 		newHighlightedAchievements = [];
 		newDefaultCategoriesArray = [];
@@ -286,6 +288,7 @@
 						fd.set('url', editUrl);
 						fd.set('archived', editArchived.toString());
 						fd.set('company', editCompany);
+						fd.set('role', editRole);
 						fd.set('introduction', editIntroduction);
 						fd.set('highlightedAchievements', JSON.stringify(editHighlightedAchievements));
 						fd.set('defaultCategories', editDefaultCategoriesArray.join(', '));
@@ -305,6 +308,13 @@
 					<!-- ... existing form fields for company, url, introduction ... -->
 					<div class="mb-2 flex items-center gap-2">
 						<input type="text" name="company" bind:value={editCompany} class="text-lg font-bold" />
+						<input
+							type="text"
+							name="role"
+							bind:value={editRole}
+							class="text-base"
+							placeholder="Role"
+						/>
 						<span>({application.id})</span>
 						<label class="flex items-center gap-1">
 							<input type="checkbox" bind:checked={editArchived} />
@@ -414,6 +424,9 @@
 							<span class="text-sm text-gray-500">#{application.id}</span>
 							{application.company}
 						</h3>
+						{#if application.role}
+							<span class="text-base text-gray-700">- {application.role}</span>
+						{/if}
 						{#if application.archived}
 							<span class="rounded bg-gray-200 px-2 py-1 text-xs">ARCHIVED</span>
 						{/if}
@@ -512,6 +525,7 @@
 				const fd = new FormData(form);
 				fd.set('url', newUrl);
 				fd.set('company', newCompany);
+				fd.set('role', newRole);
 				fd.set('introduction', newIntroduction);
 				fd.set('highlightedAchievements', JSON.stringify(newHighlightedAchievements));
 				fd.set('defaultCategories', newDefaultCategoriesArray.join(', '));
@@ -537,6 +551,14 @@
 					bind:value={newCompany}
 					class="text-lg font-bold"
 					placeholder="Company Name"
+					required
+				/>
+				<input
+					type="text"
+					name="role"
+					bind:value={newRole}
+					class="mt-1 text-base"
+					placeholder="Role"
 					required
 				/>
 			</div>

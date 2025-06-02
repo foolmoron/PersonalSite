@@ -37,7 +37,7 @@
 </script>
 
 <svelte:head>
-	<title>{application.company} Application</title>
+	<title>Momin Khan - Resume for {application.company}</title>
 </svelte:head>
 
 <NameAndLinks></NameAndLinks>

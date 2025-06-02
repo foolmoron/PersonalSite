@@ -22,6 +22,7 @@ export const actions: Actions = {
 		const form = await request.formData();
 		const url = form.get('url');
 		const company = form.get('company');
+		const role = form.get('role');
 		const introduction = form.get('introduction');
 		const highlightedAchievements = form.get('highlightedAchievements');
 		const defaultCategories = form.get('defaultCategories');
@@ -32,6 +33,9 @@ export const actions: Actions = {
 		}
 		if (typeof company !== 'string' || !company.trim()) {
 			return fail(400, { error: 'Company name is required' });
+		}
+		if (typeof role !== 'string' || !role.trim()) {
+			return fail(400, { error: 'Role is required' });
 		}
 		if (typeof introduction !== 'string' || !introduction.trim()) {
 			return fail(400, { error: 'Introduction is required' });
@@ -77,6 +81,7 @@ export const actions: Actions = {
 		await db.insert(applications).values({
 			url: url.trim(),
 			company: company.trim(),
+			role: role.trim(),
 			introduction: introduction.trim(),
 			highlightedAchievementIds: achievementIdsArr,
 			highlightedComments: achievementCommentsArr,
@@ -92,6 +97,7 @@ export const actions: Actions = {
 		const url = form.get('url');
 		const archived = form.get('archived');
 		const company = form.get('company');
+		const role = form.get('role');
 		const introduction = form.get('introduction');
 		const highlightedAchievements = form.get('highlightedAchievements');
 		const defaultCategories = form.get('defaultCategories');
@@ -109,6 +115,9 @@ export const actions: Actions = {
 		}
 		if (typeof company !== 'string' || !company.trim()) {
 			return fail(400, { error: 'Company name is required' });
+		}
+		if (typeof role !== 'string' || !role.trim()) {
+			return fail(400, { error: 'Role is required' });
 		}
 		if (typeof introduction !== 'string' || !introduction.trim()) {
 			return fail(400, { error: 'Introduction is required' });
@@ -150,13 +159,13 @@ export const actions: Actions = {
 			.split(',')
 			.map((scope) => scope.trim())
 			.filter(Boolean);
-
 		await db
 			.update(applications)
 			.set({
 				url: url.trim(),
 				archived: archived === 'true',
 				company: company.trim(),
+				role: role.trim(),
 				introduction: introduction.trim(),
 				highlightedAchievementIds: achievementIdsArr,
 				highlightedComments: achievementCommentsArr,
