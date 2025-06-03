@@ -14,20 +14,22 @@
 	const skillsCss =
 		`<style>` +
 		Object.entries(COLORS)
-			.map(([k, v]) => `.skills-${k} { background-color: ${v}; }`)
+			.map(([k, v]) => `.skills-${k} { background-color: ${v}; border-color: ${v}; }`)
 			.join('\n') +
 		`</style>`;
 	const tagsCss =
 		`<style>` +
 		Object.entries(TAGS)
-			.map(([k, [_, v]]) => `.tags-${k} { background-color: ${v}; }`)
+			.map(([k, [_, v]]) => `.tags-${k} { background-color: ${v}; border-color: ${v}; }`)
 			.join('\n') +
 		`</style>`;
 	const categoriesCss =
 		`<style>` +
-		`.categories-everything { background-color: #e0b2ff; }\n` +
+		`.categories-everything { background-color: #e0b2ff; border-color: #e0b2ff; }\n` +
 		Object.entries(CATEGORIES)
-			.map(([k, v]) => `.categories-${k} { background-color: ${v.color}; }`)
+			.map(
+				([k, v]) => `.categories-${k} { background-color: ${v.color}; border-color: ${v.color}; }`,
+			)
 			.join('\n') +
 		`</style>`;
 </script>

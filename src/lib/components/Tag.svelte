@@ -39,13 +39,15 @@
 	.tag {
 		padding: 0.1rem 0.5rem;
 		font-size: smaller;
+		border-width: 1px;
+		border-style: solid;
 		border-radius: 1rem;
 	}
 
 	.tag.inactive {
-		opacity: 0.6;
+		background-color: transparent;
 	}
 	.tag.big {
-		padding: 0.2rem 0.8rem;
+		border-width: 0.3rem;
 	}
 </style>
