@@ -1,6 +1,14 @@
 # foolmoron's Personal Site - Resume Builder
 
-WARNING: I used this project to experiment with github copilot agent mode, so much of the code is implemented by AI.
+Check it out: [fool.dev](https://fool.dev/)
+
+This is a design for a personal site that acts as an interactive resume builder, with a focus not just on projects, but key achievements in those projects. I thought of it after my experience applying to dozens of jobs with customized resumes and cover letters, especially with narrative-driven resumes.
+
+## Tech stack
+
+Svelte 5 with Vercel & Supabase. Wanted to try it out to see what the hype was about. It's alright.
+
+NOTE: I also used this project to experiment with GitHub Copilot Agents, so large portions of the code (and nearly all the admin page code) is implemented by AI.
 
 ## Developing
 
