@@ -6,6 +6,7 @@
 	}>();
 
 	let selectedIndex = $state<number>(0);
+	let lightboxOpen = $state<boolean>(false);
 	let lightboxPopover: HTMLElement;
 
 	function openLightbox(index: number) {
@@ -38,6 +39,9 @@
 			closeLightbox();
 		}
 	}
+	function ontoggle() {
+		lightboxOpen = lightboxPopover?.matches(':popover-open');
+	}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -50,7 +54,7 @@
 			</button>
 		{/each}
 	</div>
-	<div bind:this={lightboxPopover} popover="auto" class="lightbox">
+	<div bind:this={lightboxPopover} popover="auto" class="lightbox" {ontoggle}>
 		<div class="lightbox-content">
 			{#if urls.length > 1}
 				<button
@@ -72,9 +76,11 @@
 				</button>
 			{/if}
 
-			<div class="media-container">
-				<EmbeddedMedia url={urls[selectedIndex]} />
-			</div>
+			{#if lightboxOpen}
+				<div class="media-container">
+					<EmbeddedMedia url={urls[selectedIndex]} fullVideo />
+				</div>
+			{/if}
 		</div>
 	</div>
 {/if}

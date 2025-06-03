@@ -153,7 +153,7 @@ export const actions: Actions = {
 		await db
 			.update(achievements)
 			.set({
-				summary,
+				summary: summary.replace(/\.+$/, '') + '.', // Ensure summary ends with a period
 				description: description.trim() || null,
 				private: privateValue,
 				tags: tagsArr as Achievement['tags'],
@@ -194,7 +194,7 @@ export const actions: Actions = {
 
 		await db.insert(achievements).values({
 			projectId,
-			summary: summary.trim(),
+			summary: summary.replace(/\.+$/, '') + '.', // Ensure summary ends with a period
 			description: description.trim() || null,
 			private: privateValue,
 			tags: tagsArr as Achievement['tags'],

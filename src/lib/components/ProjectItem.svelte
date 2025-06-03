@@ -60,7 +60,7 @@
 <style>
 	.project-item {
 		background-color: white;
-		scroll-margin-top: 2rem;
+		scroll-margin-top: 0.8rem;
 		max-width: 72rem;
 		margin-bottom: 1rem;
 	}

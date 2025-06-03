@@ -239,7 +239,9 @@
 						{/if}
 					</form>
 				{:else}
-					<h3 class="inline text-2xl font-bold">{project.name} ({project.id})</h3>
+					<div class="sticky top-0 bg-white">
+						<h3 class="inline text-2xl font-bold">{project.name} ({project.id})</h3>
+					</div>
 					<button onclick={() => startEdit(project)} class="btn btn-sm btn-action rounded-sm px-2"
 						>Edit</button
 					>
