@@ -1,12 +1,12 @@
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
 import { applications, achievements, projects } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import type { Application } from '$lib/server/db/schema';
 import { fail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
-	const allApplications = await db.select().from(applications).orderBy(applications.company);
+	const allApplications = await db.select().from(applications).orderBy(desc(applications.id));
 	const allAchievements = await db.select().from(achievements);
 	const allProjects = await db.select().from(projects);
 
