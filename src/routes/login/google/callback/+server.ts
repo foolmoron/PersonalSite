@@ -1,6 +1,6 @@
 import { GOOGLE_SELF_ID } from '$env/static/private';
 import { generateSessionToken, createSession, setSessionTokenCookie } from '$lib/server/auth';
-import { google } from '$lib/server/auth';
+import { getGoogle } from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
 import { encodeBase32LowerCase } from '@oslojs/encoding';
@@ -34,7 +34,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 
 	let tokens: OAuth2Tokens;
 	try {
-		tokens = await google.validateAuthorizationCode(code, codeVerifier);
+		tokens = await getGoogle(event.url.origin).validateAuthorizationCode(code, codeVerifier);
 	} catch (_e: unknown) {
 		// Invalid code or client credentials
 		return new Response(null, {
