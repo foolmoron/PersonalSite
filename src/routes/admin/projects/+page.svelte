@@ -378,7 +378,7 @@
 										{/if}
 										{#if achievement.tags && achievement.tags.length > 0}
 											<div class="flex flex-wrap gap-1 py-1">
-												{#each achievement.tags as (keyof typeof TAGS)[] as tag}
+												{#each (achievement.tags as (keyof typeof TAGS)[]).toSorted((a, b) => tags.indexOf(a) - tags.indexOf(b)) as tag}
 													<Tag {tag} />
 												{/each}
 											</div>

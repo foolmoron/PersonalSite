@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { TAGS } from '$lib/enums';
+	import { tags } from '$lib/state/skills.svelte';
 	import type { Achievement, Project } from '$lib/server/db/schema';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import Tag from './Tag.svelte';
@@ -299,9 +300,8 @@
 			<div class="popup-header">
 				<h3>{achievement.summary}</h3>
 			</div>
-
 			<div class="tags-container">
-				{#each achievement.tags as (keyof typeof TAGS)[] as tag}
+				{#each (achievement.tags as (keyof typeof TAGS)[]).toSorted((a, b) => tags.indexOf(a) - tags.indexOf(b)) as tag}
 					<Tag {tag} />
 				{/each}
 			</div>
