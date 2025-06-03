@@ -108,7 +108,9 @@
 		editAchievementBuffer = { ...achievement };
 		editAchievementSummary = achievement.summary;
 		editAchievementDescription = achievement.description ?? '';
-		editAchievementPrivate = achievement.private ?? '';
+		editAchievementPrivate = achievement.private
+			? 'private private private private private private private private private private private'
+			: '';
 		editAchievementTagsArray = (
 			Array.isArray(achievement.tags) ? [...achievement.tags] : []
 		) as (keyof typeof TAGS)[];
@@ -376,7 +378,9 @@
 											<div class="text-sm">{achievement.description}</div>
 										{/if}
 										{#if achievement.private}
-											<div class="text-sm italic">{achievement.private}</div>
+											<div class="text-sm italic">
+												{'private private private private private private private private private private private'}
+											</div>
 										{/if}
 										{#if achievement.tags && achievement.tags.length > 0}
 											<div class="flex flex-wrap gap-1 py-1">
