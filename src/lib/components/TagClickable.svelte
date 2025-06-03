@@ -7,7 +7,7 @@
 </script>
 
 <!-- svelte-ignore a11y_invalid_attribute -->
-<button {onclick}><Tag {...props}></Tag></button>
+<button type="button" {onclick}><Tag {...props}></Tag></button>
 
 <style>
 	button {

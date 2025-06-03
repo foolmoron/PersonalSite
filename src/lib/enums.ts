@@ -68,6 +68,12 @@ interface Category {
 	tags: (keyof typeof TAGS)[];
 }
 export const CATEGORIES = {
+	games: {
+		name: 'Game Developer',
+		color: '#ffbc5f',
+		skills: ['cs', 'unity', 'godot', 'consoles', 'vr', 'gamedesign', 'audio', 'vfx', 'gpu'],
+		tags: ['onlyi', 'docs'],
+	},
 	web: {
 		name: 'Web Developer',
 		color: '#ffbc5f',
@@ -86,12 +92,6 @@ export const CATEGORIES = {
 			'webgl',
 			'webrtc',
 		],
-		tags: ['onlyi', 'docs'],
-	},
-	games: {
-		name: 'Game Developer',
-		color: '#ffbc5f',
-		skills: ['cs', 'unity', 'godot', 'consoles', 'vr', 'gamedesign', 'audio', 'vfx', 'gpu'],
 		tags: ['onlyi', 'docs'],
 	},
 	realtime: {
