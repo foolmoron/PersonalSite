@@ -1,14 +1,14 @@
 <script lang="ts">
-	const { url, fullVideo } = $props<{
+	const { url, fullEmbed } = $props<{
 		url: string;
-		fullVideo?: boolean;
+		fullEmbed?: boolean;
 	}>();
-
 	const mediaInfo = $derived(() => {
 		let determinedMediaType: 'image' | 'video' | 'youtube' | 'vimeo' | 'googledrive' | 'unknown' =
 			'unknown';
 		let determinedEmbedUrl: string | null = null;
 		let youtubeVideoId: string | null = null;
+		let vimeoVideoId: string | null = null;
 
 		if (url) {
 			try {
@@ -40,6 +40,7 @@
 					if (videoId && /^\d+$/.test(videoId)) {
 						determinedMediaType = 'vimeo';
 						determinedEmbedUrl = `https://player.vimeo.com/video/${videoId}`;
+						vimeoVideoId = videoId;
 					}
 				} else if (
 					urlObj.hostname === 'drive.google.com' &&
@@ -59,7 +60,12 @@
 			}
 		} // else: !url, mediaType remains 'unknown', embedUrl remains null by default
 
-		return { mediaType: determinedMediaType, embedUrl: determinedEmbedUrl, youtubeVideoId };
+		return {
+			mediaType: determinedMediaType,
+			embedUrl: determinedEmbedUrl,
+			youtubeVideoId,
+			vimeoVideoId,
+		};
 	});
 </script>
 
@@ -69,7 +75,7 @@
 	<!-- svelte-ignore a11y_media_has_caption -->
 	<video controls src={mediaInfo().embedUrl} class="embedded-media video"> </video>
 {:else if mediaInfo().mediaType === 'youtube' && mediaInfo().embedUrl}
-	{#if fullVideo}
+	{#if fullEmbed}
 		<iframe
 			src={mediaInfo().embedUrl}
 			frameborder="0"
@@ -85,25 +91,36 @@
 				.youtubeVideoId}/0.jpg') center / cover;"
 		>
 			<div class="play-button">
-				<svg viewBox="0 0 68 48" class="play-icon">
-					<path
-						d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"
-						fill="#f00"
-					></path>
-					<path d="M 45,24 27,14 27,34" fill="#fff"></path>
+				<svg viewBox="0 0 24 24" class="play-icon">
+					<circle cx="12" cy="12" r="12" fill="rgba(0, 0, 0, 0.8)"></circle>
+					<polygon points="10,8 16,12 10,16" fill="white"></polygon>
 				</svg>
 			</div>
 		</div>
 	{/if}
 {:else if mediaInfo().mediaType === 'vimeo' && mediaInfo().embedUrl}
-	<iframe
-		src={mediaInfo().embedUrl}
-		frameborder="0"
-		allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-		allowfullscreen
-		class="embedded-media vimeo"
-		title="Vimeo video player"
-	></iframe>
+	{#if fullEmbed}
+		<iframe
+			src={mediaInfo().embedUrl}
+			frameborder="0"
+			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+			allowfullscreen
+			class="embedded-media vimeo"
+			title="Vimeo video player"
+		></iframe>
+	{:else}
+		<div
+			class="vimeo-thumbnail embedded-media image"
+			style="background: url('https://vumbnail.com/{mediaInfo().vimeoVideoId}.jpg') center / cover;"
+		>
+			<div class="play-button">
+				<svg viewBox="0 0 24 24" class="play-icon">
+					<circle cx="12" cy="12" r="12" fill="rgba(0, 0, 0, 0.8)"></circle>
+					<polygon points="10,8 16,12 10,16" fill="white"></polygon>
+				</svg>
+			</div>
+		</div>
+	{/if}
 {:else if mediaInfo().mediaType === 'googledrive' && mediaInfo().embedUrl}
 	<iframe
 		src={mediaInfo().embedUrl}
@@ -129,15 +146,19 @@
 		color: #777;
 		font-style: italic;
 	}
-
 	.youtube-thumbnail {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
+	.vimeo-thumbnail {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 	.play-button {
-		width: 68px;
+		width: 48px;
 		height: 48px;
 		transition: opacity 0.2s ease;
 	}

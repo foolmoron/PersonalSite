@@ -78,7 +78,7 @@
 
 			{#if lightboxOpen}
 				<div class="media-container">
-					<EmbeddedMedia url={urls[selectedIndex]} fullVideo />
+					<EmbeddedMedia url={urls[selectedIndex]} fullEmbed />
 				</div>
 			{/if}
 		</div>

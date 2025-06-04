@@ -48,6 +48,6 @@
 		background-color: transparent;
 	}
 	.tag.big {
-		border-width: 0.3rem;
+		border-width: 0.2rem;
 	}
 </style>
