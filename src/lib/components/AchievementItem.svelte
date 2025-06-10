@@ -270,21 +270,22 @@
 
 <div class="achievement-container">
 	<button class="summary" popovertarget={popoverId} aria-haspopup="dialog">
-		<p>
-			{achievement.summary}
-			<svg width="20" height="20" viewBox="0 0 20 20" class="inline align-bottom">
-				<circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.2" />
-				<text
-					x="10"
-					y="14.5"
-					text-anchor="middle"
-					font-family="sans-serif"
-					font-size="12"
-					font-weight="bold"
-					fill="currentColor">i</text
-				>
-			</svg>
-		</p>
+		{#if project}
+			<span class="font-light">{project.name}: </span>
+		{/if}
+		<span>{achievement.summary}</span>
+		<svg width="20" height="20" viewBox="0 0 20 20" class="inline align-bottom">
+			<circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.2" />
+			<text
+				x="10"
+				y="14.5"
+				text-anchor="middle"
+				font-family="sans-serif"
+				font-size="12"
+				font-weight="bold"
+				fill="currentColor">i</text
+			>
+		</svg>
 	</button>
 </div>
 

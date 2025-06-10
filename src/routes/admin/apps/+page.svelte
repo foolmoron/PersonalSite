@@ -214,19 +214,21 @@
 		mode: 'edit' | 'new',
 	) {
 		return `
-			<div class=\"highlighted-item mb-2 flex cursor-grab items-start gap-2 rounded border border-gray-300 bg-white p-2 shadow-sm last:mb-0\">
-				<span class=\"drag-handle pt-1 pr-1 text-gray-500\">☰</span>
-				<div class=\"flex-1\">
-					<div class=\"text-sm font-medium\">${getAchievementWithProject(item.id)}</div>
-					<textarea
-						class=\"mt-1 w-full rounded border border-gray-300 p-2 text-xs\"
-						placeholder=\"Comment for this achievement...\"
-						rows=\"2\"
-						onchange=\"this.dispatchEvent(new CustomEvent('commentchange', { detail: { index: ${index}, value: this.value }, bubbles: true }))\"
-					>${item.comment ?? ''}</textarea>
-				</div>
-				<button type=\"button\" class=\"btn btn-action btn-remove rounded-sm px-2 py-1 text-xs\" onclick=\"this.dispatchEvent(new CustomEvent('remove', { detail: { index: ${index} }, bubbles: true }))\">Remove</button>
-			</div>		`;
+		<div class='highlighted-item mb-2 flex cursor-grab items-start gap-2 rounded border border-gray-300 bg-white p-2 shadow-sm last:mb-0'>
+			<span class='drag-handle pt-1 pr-1 text-gray-500'>☰</span>
+			<div class='flex-1'>
+				<div class='text-sm font-medium'>${getAchievementWithProject(item.id)}</div>
+				<textarea
+					class='mt-1 w-full rounded border border-gray-300 p-2 text-xs'
+					placeholder='Comment for this achievement...'
+					rows='2'
+					onchange="this.dispatchEvent(new CustomEvent('commentchange', { detail: { index: ${index}, value: this.value }, bubbles: true }))"
+					onpointerdown='event.stopPropagation();'
+				>${item.comment ?? ''}</textarea>
+			</div>
+			<button type='button' class='btn btn-action btn-remove rounded-sm px-2 py-1 text-xs' onclick="this.dispatchEvent(new CustomEvent('remove', { detail: { index: ${index}, bubbles: true }))">Remove</button>
+		</div>
+	`;
 	}
 	function handleEditCommentChange(e: CustomEvent) {
 		const { index, value } = e.detail;

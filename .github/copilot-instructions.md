@@ -28,7 +28,7 @@
 - We are using Svelte 5 and SvelteKit 2, which have very different syntax from Svelte 4 (e.g. $derived instead of $:, onclick instead of on:click)
 - Create new components when they need to be heavily reused, or when they get very large and complicated
 - Always follow the style that you see in existing components
-- Use CSS class styling, like the existing components
+- Always use Tailwind instead of CSS class styling
 - The app MUST use URL routing for all meaningful view state changes, so you can copy/paste links to other people and it will load to the correct state, and you can use browser back/forward as expected
 
 ## Database
