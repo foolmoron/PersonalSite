@@ -452,6 +452,7 @@
 	.content p {
 		margin: 0;
 		line-height: 1.4;
+		white-space: pre-wrap;
 	}
 
 	.similar-achievements {

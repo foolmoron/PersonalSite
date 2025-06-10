@@ -373,7 +373,7 @@
 											</button>
 										</div>
 										{#if achievement.description}
-											<div class="text-sm">{achievement.description}</div>
+											<div class="text-sm whitespace-pre-wrap">{achievement.description}</div>
 										{/if}
 										{#if achievement.private}
 											<div class="text-sm italic">{achievement.private}</div>
