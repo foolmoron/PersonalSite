@@ -292,6 +292,20 @@
 
 <Portal target="body">
 	<div id={popoverId} class="popup" popover="auto" bind:this={popupElement}>
+		<button class="close-btn" aria-label="Close" onclick={() => togglePopup(false)}>
+			<svg
+				width="24"
+				height="24"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="x-icon"
+				><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg
+			>
+		</button>
 		{#if project}
 			<div class="project-container">
 				<ProjectHeader {project} infoOnly />
@@ -492,5 +506,27 @@
 
 	.similar-item:hover {
 		color: #004499;
+	}
+
+	.close-btn {
+		background: none;
+		border: none;
+		padding: 0.7rem;
+		margin-left: 0.5rem;
+		cursor: pointer;
+		border-bottom-left-radius: 0.25rem;
+		transition: background 0.15s;
+		right: 0;
+		top: 0;
+		position: absolute;
+	}
+	.close-btn:hover {
+		background: #f3f3f3;
+	}
+	.x-icon {
+		display: block;
+		stroke: #444;
+		width: 1.2em;
+		height: 1.2em;
 	}
 </style>
