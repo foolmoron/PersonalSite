@@ -38,6 +38,7 @@
 
 <svelte:head>
 	<title>Momin Khan - Resume for {application.company}</title>
+	<meta name="robots" content="noindex" />
 </svelte:head>
 
 <NameAndLinks></NameAndLinks>
