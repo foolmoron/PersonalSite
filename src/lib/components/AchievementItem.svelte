@@ -14,9 +14,10 @@
 		achievement: Achievement;
 		project?: Project;
 		allAchievements?: Achievement[];
+		showProject?: boolean;
 	}
 
-	let { achievement, project, allAchievements = [] }: Props = $props();
+	let { achievement, project, allAchievements = [], showProject }: Props = $props();
 	const popoverId = `achievement-popover-${achievement.id}`;
 
 	// Calculate similar achievements using a metric
@@ -270,7 +271,7 @@
 
 <div class="achievement-container">
 	<button class="summary" popovertarget={popoverId} aria-haspopup="dialog">
-		{#if project}
+		{#if project && showProject === true}
 			<span class="font-light">{project.name}: </span>
 		{/if}
 		<span>{achievement.summary}</span>

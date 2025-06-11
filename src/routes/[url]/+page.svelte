@@ -60,7 +60,12 @@
 		{#if highlight.comment}
 			<p class="mt-2">{highlight.comment}</p>
 		{/if}
-		<AchievementItem achievement={highlight} project={highlight.project} {allAchievements} />
+		<AchievementItem
+			showProject
+			achievement={highlight}
+			project={highlight.project}
+			{allAchievements}
+		/>
 	</section>
 {/each}
 
