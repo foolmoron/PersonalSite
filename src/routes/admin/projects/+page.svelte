@@ -42,6 +42,7 @@
 	let editAchievementTagsArray: (keyof typeof TAGS)[] = [];
 	let editAchievementFormError: string | null = null;
 	let editAchievementMedia = '';
+	let editAchievementOrder = 0;
 
 	// New achievement form state
 	let showNewAchievementForm = false;
@@ -52,6 +53,7 @@
 	let newAchievementTagsArray: (keyof typeof TAGS)[] = [];
 	let newAchievementFormError: string | null = null;
 	let newAchievementMedia = '';
+	let newAchievementOrder = 0;
 
 	function startEdit(project: Project) {
 		editingProjectId = project.id;
@@ -113,6 +115,7 @@
 			Array.isArray(achievement.tags) ? [...achievement.tags] : []
 		) as (keyof typeof TAGS)[];
 		editAchievementMedia = Array.isArray(achievement.media) ? achievement.media.join('\n') : '';
+		editAchievementOrder = achievement.order ?? 0;
 		editAchievementFormError = null;
 	}
 
@@ -131,6 +134,7 @@
 		newAchievementPrivate = '';
 		newAchievementTagsArray = [];
 		newAchievementMedia = '';
+		newAchievementOrder = 0;
 		newAchievementFormError = null;
 	}
 
@@ -285,6 +289,7 @@
 												fd.set('private', editAchievementPrivate);
 												fd.set('tags', editAchievementTagsArray.join(', '));
 												fd.set('media', editAchievementMedia);
+												fd.set('order', String(editAchievementOrder));
 												const res = fetch(form.action, { method: 'POST', body: fd });
 												return res
 													.then((r) => r.json())
@@ -320,6 +325,19 @@
 														class="btn btn-secondary btn-action rounded-sm px-2">Archive</button
 													>
 												</div>
+											</div>
+											<div class="mt-2 flex items-center gap-2">
+												<label for="order" class="font-bold">Order:</label>
+												<input
+													type="range"
+													min="-2"
+													max="2"
+													step="1"
+													bind:value={editAchievementOrder}
+													name="order"
+													class="w-32"
+												/>
+												<span class="ml-2">{editAchievementOrder}</span>
 											</div>
 											<textarea
 												name="description"
@@ -415,6 +433,7 @@
 									fd.set('private', newAchievementPrivate);
 									fd.set('tags', newAchievementTagsArray.join(', '));
 									fd.set('media', newAchievementMedia);
+									fd.set('order', String(newAchievementOrder));
 									const res = fetch(form.action, { method: 'POST', body: fd });
 									return res
 										.then((r) => r.json())
@@ -436,6 +455,19 @@
 										placeholder="Achievement summary"
 										required
 									/>
+									<div class="mt-2 flex items-center gap-2">
+										<label for="order" class="font-bold">Order:</label>
+										<input
+											type="range"
+											min="-2"
+											max="2"
+											step="1"
+											bind:value={newAchievementOrder}
+											name="order"
+											class="w-32"
+										/>
+										<span class="ml-2">{newAchievementOrder}</span>
+									</div>
 									<textarea
 										name="description"
 										bind:value={newAchievementDescription}

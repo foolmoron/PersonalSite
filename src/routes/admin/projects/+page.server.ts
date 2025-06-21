@@ -125,6 +125,7 @@ export const actions: Actions = {
 		const description = form.get('description');
 		const privateValue = form.get('private');
 		const tags = form.get('tags');
+		const orderRaw = form.get('order');
 
 		if (!id || typeof id !== 'string') {
 			return fail(400, { error: 'Achievement ID is required' });
@@ -144,6 +145,10 @@ export const actions: Actions = {
 		if (typeof tags !== 'string') {
 			return fail(400, { error: 'Invalid form data: tags' });
 		}
+		if (typeof orderRaw !== 'string' || isNaN(Number(orderRaw))) {
+			return fail(400, { error: 'Invalid form data: order' });
+		}
+		const order = Math.max(-2, Math.min(2, parseInt(orderRaw, 10)));
 
 		const tagsArr = tags
 			.split(',')
@@ -157,6 +162,7 @@ export const actions: Actions = {
 				description: description.trim() || null,
 				private: privateValue,
 				tags: tagsArr as Achievement['tags'],
+				order,
 			})
 			.where(eq(AchievementsTable.id, parseInt(id)));
 
@@ -170,6 +176,7 @@ export const actions: Actions = {
 		const description = form.get('description');
 		const privateValue = form.get('private');
 		const tags = form.get('tags');
+		const orderRaw = form.get('order');
 
 		if (!projectId || typeof projectId !== 'string') {
 			return fail(400, { error: 'Project ID is required' });
@@ -186,6 +193,10 @@ export const actions: Actions = {
 		if (typeof tags !== 'string') {
 			return fail(400, { error: 'Invalid form data: tags' });
 		}
+		if (typeof orderRaw !== 'string' || isNaN(Number(orderRaw))) {
+			return fail(400, { error: 'Invalid form data: order' });
+		}
+		const order = Math.max(-2, Math.min(2, parseInt(orderRaw, 10)));
 
 		const tagsArr = tags
 			.split(',')
@@ -198,6 +209,7 @@ export const actions: Actions = {
 			description: description.trim() || null,
 			private: privateValue,
 			tags: tagsArr as Achievement['tags'],
+			order,
 		});
 
 		return { success: true };
