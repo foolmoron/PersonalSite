@@ -17,7 +17,7 @@ export const sessions = pgTable('sessions', {
 });
 export type Session = typeof sessions.$inferSelect;
 
-export const projects = pgTable('projects', {
+export const ProjectsTable = pgTable('projects', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
 	description: text('description'),
@@ -32,16 +32,17 @@ export const projects = pgTable('projects', {
 		.notNull()
 		.default(sql`array[]::text[]`),
 });
-export type Project = typeof projects.$inferSelect;
+export type Project = typeof ProjectsTable.$inferSelect;
 
-export const achievements = pgTable('achievements', {
+export const AchievementsTable = pgTable('achievements', {
 	id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
 	projectId: text('project_id')
 		.notNull()
-		.references(() => projects.id),
+		.references(() => ProjectsTable.id),
 	summary: text('summary').notNull(),
 	description: text('description'),
 	private: text('private'),
+	order: integer('order').notNull().default(0),
 	media: text('media')
 		.array()
 		.notNull()
@@ -51,9 +52,9 @@ export const achievements = pgTable('achievements', {
 		.notNull()
 		.default(sql`array[]::text[]`),
 });
-export type Achievement = typeof achievements.$inferSelect;
+export type Achievement = typeof AchievementsTable.$inferSelect;
 
-export const applications = pgTable(
+export const ApplicationsTable = pgTable(
 	'applications',
 	{
 		id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
@@ -83,4 +84,4 @@ export const applications = pgTable(
 		urlIdx: index('applications_url_idx').on(table.url),
 	}),
 );
-export type Application = typeof applications.$inferSelect;
+export type Application = typeof ApplicationsTable.$inferSelect;

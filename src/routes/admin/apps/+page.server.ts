@@ -1,14 +1,20 @@
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
-import { applications, achievements, projects } from '$lib/server/db/schema';
+import { ApplicationsTable, AchievementsTable, ProjectsTable } from '$lib/server/db/schema';
 import { desc, eq } from 'drizzle-orm';
 import type { Application } from '$lib/server/db/schema';
 import { fail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
-	const allApplications = await db.select().from(applications).orderBy(desc(applications.id));
-	const allAchievements = await db.select().from(achievements);
-	const allProjects = await db.select().from(projects);
+	const allApplications = await db
+		.select()
+		.from(ApplicationsTable)
+		.orderBy(desc(ApplicationsTable.id));
+	const allAchievements = await db
+		.select()
+		.from(AchievementsTable)
+		.orderBy(AchievementsTable.order);
+	const allProjects = await db.select().from(ProjectsTable);
 
 	return {
 		applications: allApplications,
@@ -78,7 +84,7 @@ export const actions: Actions = {
 			.split(',')
 			.map((scope) => scope.trim())
 			.filter(Boolean);
-		await db.insert(applications).values({
+		await db.insert(ApplicationsTable).values({
 			url: url.trim(),
 			company: company.trim(),
 			role: role.trim(),
@@ -160,7 +166,7 @@ export const actions: Actions = {
 			.map((scope) => scope.trim())
 			.filter(Boolean);
 		await db
-			.update(applications)
+			.update(ApplicationsTable)
 			.set({
 				url: url.trim(),
 				archived: archived === 'true',
@@ -172,7 +178,7 @@ export const actions: Actions = {
 				defaultCategories: categoriesArr as Application['defaultCategories'],
 				defaultScopes: scopesArr as Application['defaultScopes'],
 			})
-			.where(eq(applications.id, numericId));
+			.where(eq(ApplicationsTable.id, numericId));
 
 		return { success: true };
 	},
@@ -189,7 +195,10 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid application ID' });
 		}
 
-		await db.update(applications).set({ archived: true }).where(eq(applications.id, numericId));
+		await db
+			.update(ApplicationsTable)
+			.set({ archived: true })
+			.where(eq(ApplicationsTable.id, numericId));
 
 		return { success: true };
 	},
@@ -206,7 +215,7 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid application ID' });
 		}
 
-		await db.delete(applications).where(eq(applications.id, numericId));
+		await db.delete(ApplicationsTable).where(eq(ApplicationsTable.id, numericId));
 
 		return { success: true };
 	},

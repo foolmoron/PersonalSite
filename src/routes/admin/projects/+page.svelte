@@ -268,7 +268,7 @@
 					<h4 class="text-lg font-medium">Achievements</h4>
 					{#if project.achievements && project.achievements.length > 0}
 						<ul class="space-y-3">
-							{#each project.achievements.toSorted((a, b) => a.id - b.id) as achievement}
+							{#each project.achievements.toSorted((a, b) => a.order - b.order || a.id - b.id) as achievement}
 								<li class="border-l-2 border-gray-200 pl-3">
 									{#if editingAchievementId === achievement.id && editAchievementBuffer}
 										<form

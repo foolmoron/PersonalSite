@@ -15,7 +15,7 @@
 
 	const TAGS_ALWAYS_SHOW = new Set<keyof typeof TAGS>(['general']);
 	const TAGS_DEFAULT_HIDE = new Set<keyof typeof TAGS>(['subtle']);
-	const achievementsAll = project.achievements.toSorted((a, b) => a.id - b.id);
+	const achievementsAll = project.achievements.toSorted((a, b) => a.order - b.order || a.id - b.id);
 	const achievementsVisible = $derived(
 		achievementsAll.filter(
 			(a) =>

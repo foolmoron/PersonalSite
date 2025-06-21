@@ -1,7 +1,7 @@
 import { getProjectsByYear } from '$lib/server/projects';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { projects, achievements } from '$lib/server/db/schema';
+import { ProjectsTable, AchievementsTable } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import type { Project, Achievement } from '$lib/server/db/schema';
 import type { Actions } from './$types';
@@ -52,7 +52,7 @@ export const actions: Actions = {
 			.map((m) => m.trim())
 			.filter(Boolean);
 		await db
-			.update(projects)
+			.update(ProjectsTable)
 			.set({
 				name,
 				description,
@@ -61,7 +61,7 @@ export const actions: Actions = {
 				skills: skillsArr as Project['skills'],
 				media: mediaArr,
 			})
-			.where(eq(projects.id, id));
+			.where(eq(ProjectsTable.id, id));
 		return { success: true };
 	},
 
@@ -103,7 +103,7 @@ export const actions: Actions = {
 			.map((m) => m.trim())
 			.filter(Boolean);
 
-		await db.insert(projects).values({
+		await db.insert(ProjectsTable).values({
 			id: id.trim(),
 			name: name.trim(),
 			description: description.trim() || null,
@@ -151,14 +151,14 @@ export const actions: Actions = {
 			.filter(Boolean);
 
 		await db
-			.update(achievements)
+			.update(AchievementsTable)
 			.set({
 				summary: summary.trim().replace(/\.+$/, '') + '.', // Ensure summary ends with a period
 				description: description.trim() || null,
 				private: privateValue,
 				tags: tagsArr as Achievement['tags'],
 			})
-			.where(eq(achievements.id, parseInt(id)));
+			.where(eq(AchievementsTable.id, parseInt(id)));
 
 		return { success: true };
 	},
@@ -192,7 +192,7 @@ export const actions: Actions = {
 			.map((t) => t.trim())
 			.filter(Boolean);
 
-		await db.insert(achievements).values({
+		await db.insert(AchievementsTable).values({
 			projectId,
 			summary: summary.trim().replace(/\.+$/, '') + '.', // Ensure summary ends with a period
 			description: description.trim() || null,

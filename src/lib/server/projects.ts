@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db';
-import { type Achievement, type Project } from '$lib/server/db/schema';
+import { AchievementsTable, type Achievement, type Project } from '$lib/server/db/schema';
+import { asc } from 'drizzle-orm';
 
 export interface ProjectsYear {
 	year: number;
@@ -8,8 +9,10 @@ export interface ProjectsYear {
 
 export async function getProjectsByYear() {
 	const [achievements, projects] = await Promise.all([
-		db.query.achievements.findMany(),
-		db.query.projects.findMany(),
+		db.query.AchievementsTable.findMany({
+			orderBy: [asc(AchievementsTable.order)],
+		}),
+		db.query.ProjectsTable.findMany(),
 	]);
 
 	const projs = projects.map((p) => ({

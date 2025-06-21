@@ -1,7 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { applications } from '$lib/server/db/schema';
+import { ApplicationsTable } from '$lib/server/db/schema';
 import { getProjectsByYear } from '$lib/server/projects';
 import type { PageServerLoad } from './$types';
 
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
 	// Look up the application by URL
 	const application = await db.query.applications.findFirst({
-		where: eq(applications.url, url),
+		where: eq(ApplicationsTable.url, url),
 	});
 
 	// Return 404 if no matching application found
