@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	// Look up the application by URL
-	const application = await db.query.applications.findFirst({
+	const application = await db.query.ApplicationsTable.findFirst({
 		where: eq(ApplicationsTable.url, url),
 	});
 
