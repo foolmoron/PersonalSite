@@ -12,7 +12,6 @@
 	<nav class="user-navbar">
 		<div class="user-info">
 			<span class="username">{user.username}</span>
-			<span class="user-id">ID: {user.googleId}</span>
 		</div>
 		<div class="nav-links">
 			<a href="/">Home</a>
