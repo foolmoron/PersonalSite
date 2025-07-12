@@ -8,9 +8,10 @@
 	interface Props {
 		project: Project;
 		infoOnly?: boolean;
+		collapsible?: boolean;
 	}
 
-	const { project, infoOnly = false }: Props = $props();
+	const { project, infoOnly = false, collapsible = false }: Props = $props();
 
 	const skillsVisible = $derived(
 		skills.filter(
@@ -26,55 +27,104 @@
 </script>
 
 <header class="project-header" style={infoOnly ? 'padding: 0;' : ''}>
-	<h1>
-		<a
-			href={`#${project.id}`}
-			class="project-link"
-			onclick={() => {
-				document.querySelectorAll('[popover]').forEach((p) => (p as HTMLElement).hidePopover());
-			}}
-		>
-			{project.name}
-		</a>
-		<span class="years">
-			{project.start.toLocaleDateString('en-US', {
-				month: 'short',
-				year: 'numeric',
-			})} - {project.end?.toLocaleDateString('en-US', {
-				month: 'short',
-				year: 'numeric',
-			}) ?? 'Present'}
-		</span>
-	</h1>
-	<h2>
-		{project.description}
-	</h2>
-	{#if !infoOnly}
-		<div class="skills-container hide-when-empty">
-			{#each skillsVisible as skill}
-				<Tag {skill}></Tag>
-			{/each}
-
-			{#if skillsHidden.length > 0}
-				{#if showHiddenSkills}
-					{#each skillsHidden as skill}
+	{#if collapsible}
+		<details>
+			<summary class="cursor-pointer">
+				<h1 class="inline">
+					{project.name}
+					<span class="years">
+						{project.start.toLocaleDateString('en-US', {
+							month: 'short',
+							year: 'numeric',
+						})} - {project.end?.toLocaleDateString('en-US', {
+							month: 'short',
+							year: 'numeric',
+						}) ?? 'Present'}
+					</span>
+				</h1>
+			</summary>
+			<h2>
+				{project.description}
+			</h2>
+			{#if !infoOnly}
+				<div class="skills-container hide-when-empty">
+					{#each skillsVisible as skill}
 						<Tag {skill}></Tag>
 					{/each}
-				{:else}
-					<button
-						class="hidden-skills-button"
-						onclick={() => {
-							showHiddenSkills = true;
-						}}
-					>
-						Show {skillsHidden.length} other skill{skillsHidden.length !== 1 ? 's' : ''}...
-					</button>
-				{/if}
+
+					{#if skillsHidden.length > 0}
+						{#if showHiddenSkills}
+							{#each skillsHidden as skill}
+								<Tag {skill}></Tag>
+							{/each}
+						{:else}
+							<button
+								class="hidden-skills-button"
+								onclick={() => {
+									showHiddenSkills = true;
+								}}
+							>
+								Show {skillsHidden.length} other skill{skillsHidden.length !== 1 ? 's' : ''}...
+							</button>
+						{/if}
+					{/if}
+				</div>
 			{/if}
-		</div>
-	{/if}
-	{#if project.media && project.media.length > 0}
-		<EmbeddedMediaList urls={project.media} />
+			{#if project.media && project.media.length > 0}
+				<EmbeddedMediaList urls={project.media} />
+			{/if}
+		</details>
+	{:else}
+		<h1>
+			<a
+				href={`#${project.id}`}
+				class="project-link"
+				onclick={() => {
+					document.querySelectorAll('[popover]').forEach((p) => (p as HTMLElement).hidePopover());
+				}}
+			>
+				{project.name}
+			</a>
+			<span class="years">
+				{project.start.toLocaleDateString('en-US', {
+					month: 'short',
+					year: 'numeric',
+				})} - {project.end?.toLocaleDateString('en-US', {
+					month: 'short',
+					year: 'numeric',
+				}) ?? 'Present'}
+			</span>
+		</h1>
+		<h2>
+			{project.description}
+		</h2>
+		{#if !infoOnly}
+			<div class="skills-container hide-when-empty">
+				{#each skillsVisible as skill}
+					<Tag {skill}></Tag>
+				{/each}
+
+				{#if skillsHidden.length > 0}
+					{#if showHiddenSkills}
+						{#each skillsHidden as skill}
+							<Tag {skill}></Tag>
+						{/each}
+					{:else}
+						<button
+							class="hidden-skills-button"
+							onclick={() => {
+								showHiddenSkills = true;
+							}}
+						>
+							Show {skillsHidden.length} other skill{skillsHidden.length !== 1 ? 's' : ''}...
+						</button>
+					{/if}
+				{/if}
+			</div>
+		{/if}
+		{#if project.media && project.media.length > 0}
+			<EmbeddedMediaList urls={project.media} />
+		{/if}
 	{/if}
 </header>
 

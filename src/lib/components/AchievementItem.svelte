@@ -307,6 +307,9 @@
 			>
 		</button>
 		{#if project}
+			<div class="project-container collapsible">
+				<ProjectHeader {project} infoOnly collapsible />
+			</div>
 			<div class="project-container">
 				<ProjectHeader {project} infoOnly />
 			</div>
@@ -411,6 +414,18 @@
 		border-bottom: 1px solid #858585;
 		padding-bottom: 0.5rem;
 		margin-bottom: 0.5rem;
+
+		display: none;
+	}
+	@media (width >= 720px) and (height >= 720px) {
+		.project-container:not(.collapsible) {
+			display: block;
+		}
+	}
+	@media (width < 720px) or (height < 720px) {
+		.project-container.collapsible {
+			display: block;
+		}
 	}
 
 	.popup[popover]:not(:popover-open) {
