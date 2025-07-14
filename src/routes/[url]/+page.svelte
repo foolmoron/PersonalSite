@@ -48,7 +48,21 @@
 		your <b>{application.role}</b> role, using my
 		<a href="https://github.com/foolmoron/PersonalSite">interactive resume builder</a>. Click on
 		each one for more info. When you're done, you can dig through the rest of my work on
-		<a href="/">my homepage</a>, or at the bottom of this page.
+		<a href="/">my homepage</a>, or at the
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<!-- svelte-ignore a11y_missing_attribute -->
+		<a
+			class="cursor-pointer"
+			aria-label="Scroll to bottom of page"
+			onclick={() => {
+				document
+					.querySelector('#afterhighlights')
+					?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}}
+		>
+			bottom of this page
+		</a>.
 	</p>
 	{#if application.introduction}
 		<p class="mb-4">{application.introduction}</p>
@@ -69,7 +83,7 @@
 	</section>
 {/each}
 
-<h1 class="my-4">
+<h1 class="my-4 scroll-mt-8" id="afterhighlights">
 	That's it for the highlights! The following is the rest of my work, which you can see with more
 	filter options on <a href="/">my homepage</a>:
 </h1>
