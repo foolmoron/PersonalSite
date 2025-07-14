@@ -226,7 +226,7 @@
 					onpointerdown='event.stopPropagation();'
 				>${item.comment ?? ''}</textarea>
 			</div>
-			<button type='button' class='btn btn-action btn-remove rounded-sm px-2 py-1 text-xs' onclick="this.dispatchEvent(new CustomEvent('remove', { detail: { index: ${index}, bubbles: true }))">Remove</button>
+			<button type='button' class='btn btn-action btn-remove rounded-sm px-2 py-1 text-xs' onclick="this.dispatchEvent(new CustomEvent('remove', { detail: { index: ${index} }, bubbles: true }))">Remove</button>
 		</div>
 	`;
 	}
