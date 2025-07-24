@@ -6,6 +6,7 @@
 	import TagClickable from '$lib/components/TagClickable.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import SortableList from '$lib/components/SortableList.svelte';
+	import { marked } from 'marked';
 
 	interface ApplicationsPageData extends PageData {
 		applications: Application[];
@@ -445,9 +446,9 @@
 						<a href="/{application.url}" target="_blank">/{application.url}</a>
 					</div>
 
-					<div class="mb-2">
+					<div class="mb-2 text-sm">
 						<strong>Introduction:</strong>
-						<p class="text-sm">{application.introduction}</p>
+						{@html marked(application.introduction ?? '')}
 					</div>
 
 					<!-- Updated display for highlighted achievements -->

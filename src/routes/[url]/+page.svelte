@@ -8,6 +8,7 @@
 		toggleCategory,
 		toggleSkill,
 	} from '$lib/state/skills.svelte';
+	import { marked } from 'marked';
 	import type { PageServerData } from './$types';
 
 	let { data }: { data: PageServerData } = $props();
@@ -65,7 +66,8 @@
 		</a>.
 	</p>
 	{#if application.introduction}
-		<p class="mb-4">{application.introduction}</p>
+		{@html marked(application.introduction)}
+		<div class="mb-4"></div>
 	{/if}
 </header>
 

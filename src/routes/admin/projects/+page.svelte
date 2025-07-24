@@ -6,6 +6,7 @@
 	import TagClickable from '$lib/components/TagClickable.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import EmbeddedMediaList from '$lib/components/EmbeddedMediaList.svelte';
+	import { marked } from 'marked';
 
 	export let data: PageData;
 
@@ -391,7 +392,9 @@
 											</button>
 										</div>
 										{#if achievement.description}
-											<div class="text-sm whitespace-pre-wrap">{achievement.description}</div>
+											<div class="text-sm whitespace-pre-wrap">
+												{@html marked(achievement.description ?? '')}
+											</div>
 										{/if}
 										{#if achievement.private}
 											<div class="text-sm italic">{achievement.private}</div>

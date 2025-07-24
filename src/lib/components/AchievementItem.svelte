@@ -6,6 +6,7 @@
 	import Tag from './Tag.svelte';
 	import { onMount } from 'svelte';
 	import Portal from 'svelte-portal';
+	import { marked } from 'marked';
 
 	// Maximum character length for URL slug (will round up to include the full word)
 	const MAX_SLUG_CHAR_LENGTH = 32;
@@ -326,7 +327,7 @@
 			</div>
 
 			<div class="content">
-				<p>{achievement.description}</p>
+				{@html marked(achievement.description ?? '')}
 			</div>
 
 			{#if similarAchievements.length > 0}
