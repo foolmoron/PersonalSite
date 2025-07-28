@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { ApplicationsTable } from '$lib/server/db/schema';
 import { getProjectsByYear } from '$lib/server/projects';
-import type { PageServerLoad } from './$types';
+import type { EntryGenerator, PageServerLoad } from './$types';
 
 const REDIRECTS = {
 	typescript:
@@ -37,4 +37,9 @@ export const load: PageServerLoad = async ({ params }) => {
 		application,
 		years,
 	};
+};
+
+export const entries: EntryGenerator = async () => {
+	const applications = await db.query.ApplicationsTable.findMany();
+	return applications.map((app) => ({ url: `${app.url}` }));
 };
