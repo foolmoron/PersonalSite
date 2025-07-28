@@ -14,6 +14,7 @@ export function getGoogle(baseUrl: string) {
 }
 
 export const sessionCookieName = 'auth-session';
+export const adminLandingPage = '/admin/projects';
 
 export function generateSessionToken() {
 	const bytes = crypto.getRandomValues(new Uint8Array(20));

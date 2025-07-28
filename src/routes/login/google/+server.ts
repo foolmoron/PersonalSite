@@ -1,9 +1,22 @@
 import { generateState, generateCodeVerifier } from 'arctic';
-import { getGoogle } from '$lib/server/auth';
+import {
+	adminLandingPage,
+	getGoogle,
+	sessionCookieName,
+	validateSessionToken,
+} from '$lib/server/auth';
 
-import type { RequestEvent } from '@sveltejs/kit';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
 
 export async function GET(event: RequestEvent): Promise<Response> {
+	const sessionToken = event.cookies.get(sessionCookieName);
+	if (sessionToken) {
+		const { user } = await validateSessionToken(sessionToken);
+		if (user) {
+			throw redirect(302, adminLandingPage);
+		}
+	}
+
 	const state = generateState();
 	const codeVerifier = generateCodeVerifier();
 	const url = getGoogle(event.url.origin).createAuthorizationURL(state, codeVerifier, [

@@ -1,11 +1,16 @@
 import { GOOGLE_SELF_ID } from '$env/static/private';
-import { generateSessionToken, createSession, setSessionTokenCookie } from '$lib/server/auth';
+import {
+	generateSessionToken,
+	createSession,
+	setSessionTokenCookie,
+	adminLandingPage,
+} from '$lib/server/auth';
 import { getGoogle } from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
 import { encodeBase32LowerCase } from '@oslojs/encoding';
 
-import type { RequestEvent } from '@sveltejs/kit';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { decodeIdToken, type OAuth2Tokens } from 'arctic';
 import { eq } from 'drizzle-orm';
 
@@ -89,10 +94,5 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	const sessionToken = generateSessionToken();
 	const session = await createSession(sessionToken, user.id);
 	setSessionTokenCookie(event, sessionToken, session.expiresAt);
-	return new Response(null, {
-		status: 302,
-		headers: {
-			Location: '/admin/projects',
-		},
-	});
+	throw redirect(302, adminLandingPage);
 }
