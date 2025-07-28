@@ -17,41 +17,55 @@ export const sessions = pgTable('sessions', {
 });
 export type Session = typeof sessions.$inferSelect;
 
-export const ProjectsTable = pgTable('projects', {
-	id: text('id').primaryKey(),
-	name: text('name').notNull(),
-	description: text('description'),
-	start: date('start', { mode: 'date' }).notNull().defaultNow(),
-	end: date('end', { mode: 'date' }),
-	media: text('media')
-		.array()
-		.notNull()
-		.default(sql`array[]::text[]`),
-	skills: text('skills')
-		.array()
-		.notNull()
-		.default(sql`array[]::text[]`),
-});
+export const ProjectsTable = pgTable(
+	'projects',
+	{
+		id: text('id').primaryKey(),
+		name: text('name').notNull(),
+		description: text('description'),
+		start: date('start', { mode: 'date' }).notNull().defaultNow(),
+		end: date('end', { mode: 'date' }),
+		media: text('media')
+			.array()
+			.notNull()
+			.default(sql`array[]::text[]`),
+		skills: text('skills')
+			.array()
+			.notNull()
+			.default(sql`array[]::text[]`),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	},
+	(table) => ({
+		updatedAtIdx: index('projects_updated_at_idx').on(table.updatedAt),
+	}),
+);
 export type Project = typeof ProjectsTable.$inferSelect;
 
-export const AchievementsTable = pgTable('achievements', {
-	id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-	projectId: text('project_id')
-		.notNull()
-		.references(() => ProjectsTable.id),
-	summary: text('summary').notNull(),
-	description: text('description'),
-	private: text('private'),
-	order: integer('order').notNull().default(0),
-	media: text('media')
-		.array()
-		.notNull()
-		.default(sql`array[]::text[]`),
-	tags: text('tags')
-		.array()
-		.notNull()
-		.default(sql`array[]::text[]`),
-});
+export const AchievementsTable = pgTable(
+	'achievements',
+	{
+		id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+		projectId: text('project_id')
+			.notNull()
+			.references(() => ProjectsTable.id),
+		summary: text('summary').notNull(),
+		description: text('description'),
+		private: text('private'),
+		order: integer('order').notNull().default(0),
+		media: text('media')
+			.array()
+			.notNull()
+			.default(sql`array[]::text[]`),
+		tags: text('tags')
+			.array()
+			.notNull()
+			.default(sql`array[]::text[]`),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	},
+	(table) => ({
+		updatedAtIdx: index('achievements_updated_at_idx').on(table.updatedAt),
+	}),
+);
 export type Achievement = typeof AchievementsTable.$inferSelect;
 
 export const ApplicationsTable = pgTable(
@@ -79,9 +93,11 @@ export const ApplicationsTable = pgTable(
 			.array()
 			.notNull()
 			.default(sql`array[]::text[]`),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 	},
 	(table) => ({
 		urlIdx: index('applications_url_idx').on(table.url),
+		updatedAtIdx: index('applications_updated_at_idx').on(table.updatedAt),
 	}),
 );
 export type Application = typeof ApplicationsTable.$inferSelect;

@@ -93,6 +93,7 @@ export const actions: Actions = {
 			highlightedComments: achievementCommentsArr,
 			defaultCategories: categoriesArr as Application['defaultCategories'],
 			defaultScopes: scopesArr as Application['defaultScopes'],
+			updatedAt: new Date(),
 		});
 
 		return { success: true };
@@ -177,6 +178,7 @@ export const actions: Actions = {
 				highlightedComments: achievementCommentsArr,
 				defaultCategories: categoriesArr as Application['defaultCategories'],
 				defaultScopes: scopesArr as Application['defaultScopes'],
+				updatedAt: new Date(),
 			})
 			.where(eq(ApplicationsTable.id, numericId));
 
@@ -197,7 +199,7 @@ export const actions: Actions = {
 
 		await db
 			.update(ApplicationsTable)
-			.set({ archived: true })
+			.set({ archived: true, updatedAt: new Date() })
 			.where(eq(ApplicationsTable.id, numericId));
 
 		return { success: true };

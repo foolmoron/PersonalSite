@@ -60,6 +60,7 @@ export const actions: Actions = {
 				end: end ? new Date(end) : null,
 				skills: skillsArr as Project['skills'],
 				media: mediaArr,
+				updatedAt: new Date(),
 			})
 			.where(eq(ProjectsTable.id, id));
 		return { success: true };
@@ -111,6 +112,7 @@ export const actions: Actions = {
 			end: end && typeof end === 'string' ? new Date(end) : null,
 			skills: skillsArr as Project['skills'],
 			media: mediaArr,
+			updatedAt: new Date(),
 		});
 
 		return { success: true, projectId: id };
@@ -163,6 +165,7 @@ export const actions: Actions = {
 				private: privateValue,
 				tags: tagsArr as Achievement['tags'],
 				order,
+				updatedAt: new Date(),
 			})
 			.where(eq(AchievementsTable.id, parseInt(id)));
 
@@ -210,6 +213,7 @@ export const actions: Actions = {
 			private: privateValue,
 			tags: tagsArr as Achievement['tags'],
 			order,
+			updatedAt: new Date(),
 		});
 
 		return { success: true };
