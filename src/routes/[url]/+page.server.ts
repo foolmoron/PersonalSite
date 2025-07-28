@@ -41,5 +41,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
 export const entries: EntryGenerator = async () => {
 	const applications = await db.query.ApplicationsTable.findMany();
-	return applications.map((app) => ({ url: `${app.url}` }));
+	return applications
+		.map(({ url }) => ({ url }))
+		.concat(Object.keys(REDIRECTS).map((url) => ({ url })));
 };
