@@ -1,5 +1,4 @@
 <script lang="ts">
-	import LoginLogout from '$lib/components/LoginLogout.svelte';
 	import '../app.css';
 	import { CATEGORIES, COLORS, TAGS } from '$lib/enums';
 	import { injectSpeedInsights } from '@vercel/speed-insights';
@@ -9,7 +8,7 @@
 	injectSpeedInsights();
 	injectAnalytics();
 
-	const { children, data } = $props();
+	const { children } = $props();
 
 	const skillsCss =
 		`<style>` +
@@ -44,8 +43,6 @@
 	{@html tagsCss}
 	{@html categoriesCss}
 </svelte:head>
-
-<LoginLogout user={data.user} />
 
 <PromptInjection />
 
