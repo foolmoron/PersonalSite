@@ -74,7 +74,7 @@
 {#each highlightedAchievementsWithComment as highlight}
 	<section>
 		{#if highlight.comment}
-			<p class="mt-2">{highlight.comment}</p>
+			<div class="mt-2">{@html marked(highlight.comment)}</div>
 		{/if}
 		<AchievementItem
 			showProject
