@@ -8,6 +8,8 @@ This is a design for a personal site that acts as an interactive resume builder,
 
 Svelte 5 with Vercel & Supabase. Wanted to try it out to see what the hype was about. It's alright.
 
+Pages (other than admin ones) are fully prerendered using data from the DB. There's a Supabase Cron job that checks for recent changes to the DB, and calls the Vercel redeployment hook to rerender the whole site.
+
 NOTE: I also used this project to experiment with GitHub Copilot Agents, so large portions of the code (and nearly all the admin page code) is implemented by AI.
 
 ## Developing
