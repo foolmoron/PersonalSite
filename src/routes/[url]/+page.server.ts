@@ -4,13 +4,7 @@ import { db } from '$lib/server/db';
 import { ApplicationsTable } from '$lib/server/db/schema';
 import { getProjectsByYear } from '$lib/server/projects';
 import type { EntryGenerator, PageServerLoad } from './$types';
-
-const REDIRECTS = {
-	typescript:
-		'https://docs.google.com/presentation/d/e/2PACX-1vTtZRg7lm4UtcSSmP0GEvXSDA-A6saHTLDhGan9gM1-GgsDjnETq8QePXf9nCdAUKWD0knPKTkLOVvW/pub?start=false&loop=false&delayms=3000',
-	webgames:
-		'https://docs.google.com/presentation/d/e/2PACX-1vT3QSOHEohNyswK7q5kMg7WC2ucfhRyStj3xul2aNolxfv8ajdMP3Onix80_5ISzQjh3apvh1by7X15/pub?start=false&loop=false&delayms=60000',
-} as Record<string, string | undefined>;
+import { REDIRECTS } from '$lib/server/redirects';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const url = params.url.toLowerCase();
