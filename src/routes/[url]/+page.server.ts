@@ -36,6 +36,7 @@ export const load: PageServerLoad = async ({ params }) => {
 export const entries: EntryGenerator = async () => {
 	const applications = await db.query.ApplicationsTable.findMany();
 	return applications
+		.filter(item => !item.archived)
 		.map(({ url }) => ({ url }))
 		.concat(Object.keys(REDIRECTS).map((url) => ({ url })));
 };
